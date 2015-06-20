@@ -1,4 +1,4 @@
-local DEM = 'dem082e.tif'
+local DEM = '8dem082e.tif'
 offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
@@ -16,7 +16,7 @@ end
 
 -- Parameters
 
-local VERSCA = 10 -- Vertical scale, meters per node
+local VERSCA = 1 -- Vertical scale, meters per node
 local YWATER = 1
 
 -- Set mapgen parameters
@@ -48,10 +48,11 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
 	local data = vm:get_data()
 	
-	local c_grass = minetest.get_content_id("default:dirt_with_grass")
-	local c_stone = minetest.get_content_id("default:stone")
-	local c_sand  = minetest.get_content_id("default:sand")
-	local c_water = minetest.get_content_id("default:water_source")
+	local c_grass  = minetest.get_content_id("default:dirt_with_grass")
+	local c_alpine = minetest.get_content_id("default:gravel")
+	local c_stone  = minetest.get_content_id("default:stone")
+	local c_sand   = minetest.get_content_id("default:sand")
+	local c_water  = minetest.get_content_id("default:water_source")
 
 	local demi = 1 -- index of 80x80 flat array of DEM values
 	--local blockel = get_pixel(x0, z0)
@@ -68,7 +69,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				if y <= YWATER then
 					data[vi] = c_sand
 				else
-					data[vi] = c_grass
+					if y > 100 then data[vi] = c_alpine
+					else data[vi] = c_grass end
 				end
 			elseif y <= YWATER then
 				data[vi] = c_water
@@ -98,23 +100,8 @@ function get_pixel(x,z)
 		return 0 --off the TIFF,
 	end
 	
-	local row = math.floor(length / 2) + 2*z --having to discard every other row for some reason
-	local col = width + (2 * x) --width = middle byte since each pixel is two bytes
-	--print("bitmap row: "..row.." col: "..col)
+	local row = math.floor(length / 2) + z
+	local col = math.floor(width  / 2) + x
 	demtiff:seek("set", ( offset + (row * width) + col ))
-	local twobytes = demtiff:read(2)
-	--print(twobytes)
-	local a,b = twobytes:byte(1,2)
-	--print ("a: "..a..", b: "..b)
-	local el = bytes_to_int(a,b)
-	--print ("block el: "..el.."m")
-	return el -800
-end
-
--- convert bytes (little endian) to a 32-bit two's complement integer
-function bytes_to_int(b1, b2 )--b3, b4)
-  if not b2 then error("need two bytes to convert to int",2) end
-  local n = b1 + b2*256 --+ b3*65536 + b4*16777216
-  --n = (n > 32768) and (n - 65536) or n -- no negatives in this dem
-  return n
+	return demtiff:read(1):byte() - 32
 end

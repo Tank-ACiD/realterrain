@@ -101,7 +101,7 @@ function get_pixel(x,z)
 	local row = math.floor(length / 2) + 2*z --having to discard every other row for some reason
 	local col = width + (2 * x) --width = middle byte since each pixel is two bytes
 	--print("bitmap row: "..row.." col: "..col)
-	demtiff:seek("set", ( offset + (row * (width+1)) + col ))
+	demtiff:seek("set", ( offset + (row * width) + col ))
 	local twobytes = demtiff:read(2)
 	--print(twobytes)
 	local a,b = twobytes:byte(1,2)

@@ -1,4 +1,4 @@
-local DEM = 'dem082el.tif'
+local DEM = 'eyeball.tif'
 offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
@@ -16,7 +16,7 @@ end
 
 -- Parameters
 
-local VERSCA = 1 -- Vertical scale, meters per node
+local VERSCA = 5 -- Vertical scale, meters per node
 local YWATER = 1
 
 -- Set mapgen parameters

@@ -1,4 +1,4 @@
-local DEM = '8dem082e.tif'
+local DEM = 'dem082el.tif'
 offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
@@ -37,7 +37,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local z0 = minp.z
 
 	local blelev = get_pixel(x0, z0)
-	print("block corner elev: "..blelev)
+	--print("block corner elev: "..blelev)
 	local sidelen = x1 - x0 + 1
 	local ystridevm = sidelen + 32
 
@@ -87,17 +87,17 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	vm:update_liquids()
 
 	local chugent = math.ceil((os.clock() - t0) * 1000)
-	print ("[DEM] "..chugent.." ms  mapchunk ("..cx0..", "..math.floor((y0 + 32) / 80)..", "..cz0..")")
+	--print ("[DEM] "..chugent.." ms  mapchunk ("..cx0..", "..math.floor((y0 + 32) / 80)..", "..cz0..")")
 end)
 
 --for now we are going to assume 32 bit signed elevation pixels
 --and a header offset of
 
 function get_pixel(x,z)
-	if x > math.ceil(width / 2) or x < - math.floor(width / 2)
+	if x > math.ceil(width  / 2) or x < - math.floor(width  / 2)
 	or z > math.ceil(length / 2) or z < - math.floor(length / 2) then
 		--print ("out of range of tiff")
-		return 0 --off the TIFF,
+		return -1 --off the TIFF,
 	end
 	
 	local row = math.floor(length / 2) + z

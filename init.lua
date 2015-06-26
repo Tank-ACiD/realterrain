@@ -1,23 +1,28 @@
+-- Parameters
 local DEM = 'eyeball.tif'
+local RIVER = 'rivers.tif'
+
+local VERSCA = 5 -- Vertical scale, meters per node
+local YWATER = 1
+
 offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
 local width, length, format = ImageSize.imgsize(demfilename)
+
+
+
 -- middle of our image
 local demtiff --used by get_pixel()
+local rivertiff --used by get_river
 
 if width and length then
 	demtiff = io.open(minetest.get_modpath("realterrain").."/dem/"..DEM, "rb")
 	print("image info: w: "..width.." l: "..length.." format: "..format)
 	print("after tiff offset: "..offset)
 end
-
-
-
--- Parameters
-
-local VERSCA = 5 -- Vertical scale, meters per node
-local YWATER = 1
+--open the river tif with no safety checks
+rivertiff = io.open(minetest.get_modpath("realterrain").."/dem/"..RIVER, "rb")
 
 -- Set mapgen parameters
 
@@ -36,7 +41,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local y0 = minp.y
 	local z0 = minp.z
 
-	local blelev = get_pixel(x0, z0)
+	--local blelev = get_pixel(x0, z0)
 	--print("block corner elev: "..blelev)
 	local sidelen = x1 - x0 + 1
 	local ystridevm = sidelen + 32
@@ -58,19 +63,29 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	--local blockel = get_pixel(x0, z0)
 	for z = z0, z1 do
 	for x = x0, x1 do
-		local elev = get_pixel(x, z) -- elevation in meters from DEM 
+		local elev, water = get_pixel(x, z) -- elevation in meters from DEM and water true/false
 				-- use demi to get elevation value from flat array
+
 		local node_elev = math.floor(YWATER + elev / VERSCA)
 		local vi = area:index(x, y0, z) -- voxelmanip index
 		for y = y0, y1 do
 			if y < node_elev then
 				data[vi] = c_stone
+				-- decide on ores, caverns
 			elseif y == node_elev then
-				if y <= YWATER then
-					data[vi] = c_sand
+				--if the river map says this is water then that's all we set
+				if water > 128 then
+					data[vi] = c_water
 				else
-					if y > 100 then data[vi] = c_alpine
-					else data[vi] = c_grass end
+					if y <= YWATER then
+						data[vi] = c_sand
+					else
+						if y > 100 then 
+							data[vi] = c_alpine -- shrubs?
+						else
+							data[vi] = c_grass -- decide on trees?
+						end
+					end
 				end
 			elseif y <= YWATER then
 				data[vi] = c_water
@@ -97,11 +112,12 @@ function get_pixel(x,z)
 	if x > math.ceil(width  / 2) or x < - math.floor(width  / 2)
 	or z > math.ceil(length / 2) or z < - math.floor(length / 2) then
 		--print ("out of range of tiff")
-		return -1 --off the TIFF,
+		return -1, 0 --off the TIFF,
 	end
 	
 	local row = math.floor(length / 2) + z
 	local col = math.floor(width  / 2) + x
 	demtiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32
+	rivertiff:seek("set", ( offset + (row * width) + col ))
+	return demtiff:read(1):byte() - 32, rivertiff:read(1):byte()
 end

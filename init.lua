@@ -1,6 +1,6 @@
 -- Parameters
 local DEM = 'eyeball.tif'
-local RIVER = 'rivers.tif'
+local COVER = 'cover.tif'
 
 local VERSCA = 5 -- Vertical scale, meters per node
 local YWATER = 1
@@ -22,7 +22,7 @@ if width and length then
 	print("after tiff offset: "..offset)
 end
 --open the river tif with no safety checks
-rivertiff = io.open(minetest.get_modpath("realterrain").."/dem/"..RIVER, "rb")
+covertiff = io.open(minetest.get_modpath("realterrain").."/dem/"..COVER, "rb")
 
 -- Set mapgen parameters
 
@@ -63,7 +63,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	--local blockel = get_pixel(x0, z0)
 	for z = z0, z1 do
 	for x = x0, x1 do
-		local elev, water = get_pixel(x, z) -- elevation in meters from DEM and water true/false
+		local elev, cover = get_pixel(x, z) -- elevation in meters from DEM and water true/false
 				-- use demi to get elevation value from flat array
 
 		local node_elev = math.floor(YWATER + elev / VERSCA)
@@ -74,8 +74,10 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				-- decide on ores, caverns
 			elseif y == node_elev then
 				--if the river map says this is water then that's all we set
-				if water > 128 then
+				if cover > 225 then
 					data[vi] = c_water
+				elseif cover > 128 then 
+					data[vi] = c_stone
 				else
 					if y <= YWATER then
 						data[vi] = c_sand
@@ -118,6 +120,6 @@ function get_pixel(x,z)
 	local row = math.floor(length / 2) + z
 	local col = math.floor(width  / 2) + x
 	demtiff:seek("set", ( offset + (row * width) + col ))
-	rivertiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32, rivertiff:read(1):byte()
+	covertiff:seek("set", ( offset + (row * width) + col ))
+	return demtiff:read(1):byte() - 32, covertiff:read(1):byte()
 end

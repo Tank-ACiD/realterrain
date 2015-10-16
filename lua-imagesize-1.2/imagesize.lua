@@ -55,8 +55,8 @@ function M.imgsize (filename, options)
 
     for pattern, format in pairs(TYPE_MAP) do
         if header:find(pattern) then
-			print(dump("format: "..format))
-            local sizefunc = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize/format/" .. format..".lua")
+			--print(dump("format: "..format))
+            local sizefunc = dofile(MP.."/lua-imagesize-1.2/imagesize/format/" .. format..".lua")
             local x, y, id = sizefunc(file, options)
             if closefile then file:close() end
             if origoffset then file:seek("set", origoffset) end

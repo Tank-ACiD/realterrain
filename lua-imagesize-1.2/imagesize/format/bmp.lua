@@ -1,4 +1,4 @@
-local Util = require "imagesize.util"
+local Util = dofile(MP.."/lua-imagesize-1.2/imagesize/util.lua")
 
 local MIME_TYPE = "image/x-ms-bmp"
 

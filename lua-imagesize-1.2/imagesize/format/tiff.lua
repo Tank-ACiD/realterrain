@@ -1,4 +1,4 @@
-local Util = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize/util.lua")
+local Util = dofile(MP.."/lua-imagesize-1.2/imagesize/util.lua")
 
 local MIME_TYPE = "image/tiff"
 

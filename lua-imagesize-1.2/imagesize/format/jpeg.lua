@@ -3,7 +3,7 @@
 -- and further still by rjray@blackperl.com
 -- optimization and general re-write from tmetro@vl.com
 
-local Util = require "imagesize.util"
+local Util = dofile(MP.."/lua-imagesize-1.2/imagesize/util.lua")
 
 local MIME_TYPE = "image/jpeg"
 

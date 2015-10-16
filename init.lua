@@ -1,28 +1,35 @@
+MP = minetest.get_modpath("realterrain")
 -- Parameters
-local DEM = 'eyeball.tif'
-local COVER = 'cover.tif'
+local DEM = 'eyeball.png'
+local COVER = 'cover.tif' --roughly implemented
 
 local VERSCA = 5 -- Vertical scale, meters per node
 local YWATER = 1
 
 offset = 0 --will be populated by ImageSize()
-local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
-local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
+local ImageSize = dofile(MP.."/lua-imagesize-1.2/imagesize.lua")
+local demfilename = MP.."/dem/"..DEM
 local width, length, format = ImageSize.imgsize(demfilename)
-
-
-
--- middle of our image
-local demtiff --used by get_pixel()
-local rivertiff --used by get_river
-
+local demimage
+local cover
+print("image info: w: "..width.." l: "..length.." format: "..format)
 if width and length then
-	demtiff = io.open(minetest.get_modpath("realterrain").."/dem/"..DEM, "rb")
-	print("image info: w: "..width.." l: "..length.." format: "..format)
-	print("after tiff offset: "..offset)
+    if format == 'image/png' then
+        --[[package.path = (MP.."/pngLua/?.lua;"
+                ..MP.."/pngLua/?/init.lua;"
+                ..package.path) --]]
+        print('here1')
+        dofile(MP.."/pngLua/png.lua")
+        print('here2')
+        demimage = pngImage(demfilename)
+        print('here3')
+    elseif format == 'image/tiff' then
+        demimage = io.open(MP.."/dem/"..DEM, "rb")
+    end
+    
+    cover = io.open(MP.."/dem/"..COVER, "rb") --no error checks on the cover tiff... @todo obviously fix
+    
 end
---open the river tif with no safety checks
-covertiff = io.open(minetest.get_modpath("realterrain").."/dem/"..COVER, "rb")
 
 -- Set mapgen parameters
 
@@ -111,15 +118,20 @@ end)
 --and a header offset of
 
 function get_pixel(x,z)
-	if x > math.ceil(width  / 2) or x < - math.floor(width  / 2)
+    if x > math.ceil(width  / 2) or x < - math.floor(width  / 2)
 	or z > math.ceil(length / 2) or z < - math.floor(length / 2) then
 		--print ("out of range of tiff")
-		return -1, 0 --off the TIFF,
+		return -1, 0 --off the image,
 	end
 	
 	local row = math.floor(length / 2) + z
 	local col = math.floor(width  / 2) + x
-	demtiff:seek("set", ( offset + (row * width) + col ))
-	covertiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32, covertiff:read(1):byte()
+    cover:seek("set", ( offset + (row * width) + col )) --@todo implement safely
+    if format == 'image/tiff' then
+        demimage:seek("set", ( offset + (row * width) + col ))
+        return demimage:read(1):byte() - 32, cover:read(1):byte()
+    elseif format == 'image/png' or format == 'image/bmp' then
+        return demimage.scanLines[y].pixels[x].R, cover:read(1):byte()
+    end	
 end
+

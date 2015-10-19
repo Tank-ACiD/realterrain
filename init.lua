@@ -1,5 +1,9 @@
+local ie = minetest.request_insecure_environment()
+ie.require "luarocks.loader"
+local imlib2 = ie.require "imlib2"
+
 -- Parameters
-local DEM = 'eyeball.tif'
+local DEM = 'mandelbrot16bit.tif'
 local COVER = 'cover.tif'
 
 local VERSCA = 5 -- Vertical scale, meters per node
@@ -9,7 +13,7 @@ offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
 local width, length, format = ImageSize.imgsize(demfilename)
-
+local dem = imlib2.image.load(demfilename)
 
 
 -- middle of our image
@@ -119,7 +123,9 @@ function get_pixel(x,z)
 	
 	local row = math.floor(length / 2) + z
 	local col = math.floor(width  / 2) + x
-	demtiff:seek("set", ( offset + (row * width) + col ))
+	local pixel = dem:get_pixel(row,col)
+    --print(pixel.red)
+    --demtiff:seek("set", ( offset + (row * width) + col ))
 	covertiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32, covertiff:read(1):byte()
+	return pixel.red - 32, covertiff:read(1):byte()
 end

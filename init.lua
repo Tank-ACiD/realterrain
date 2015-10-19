@@ -1,16 +1,28 @@
+local ie = minetest.request_insecure_environment()
+local modpath = minetest.get_modpath("realterrain")
+function os.capture(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  if raw then return s end
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
+end
+
 -- Parameters
-local DEM = 'eyeball.tif'
+local DEM = 'mandelbrot16bit.tif'
 local COVER = 'cover.tif'
 
-local VERSCA = 5 -- Vertical scale, meters per node
+local CEILING = 400 --should actually be 65535 for non-contrast-stretched 16 bit DEMs
+local VERSCA = 1 -- Vertical scale, meters per node
 local YWATER = 1
 
 offset = 0 --will be populated by ImageSize()
-local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
-local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
+local ImageSize = dofile(modpath.."/lua-imagesize-1.2/imagesize.lua")
+local demfilename = modpath.."/dem/"..DEM
 local width, length, format = ImageSize.imgsize(demfilename)
-
-
 
 -- middle of our image
 local demtiff --used by get_pixel()
@@ -61,9 +73,13 @@ minetest.register_on_generated(function(minp, maxp, seed)
 
 	local demi = 1 -- index of 80x80 flat array of DEM values
 	--local blockel = get_pixel(x0, z0)
-	for z = z0, z1 do
-	for x = x0, x1 do
-		local elev, cover = get_pixel(x, z) -- elevation in meters from DEM and water true/false
+	
+    local block_elev, cover = get_pixel(x0, z0)
+    for z = z0, z1 do    
+    for x = x0, x1 do
+            
+		--local elev, cover = block_elev, 0
+        local elev, cover = get_pixel(x, z) -- elevation in meters from DEM and water true/false
 				-- use demi to get elevation value from flat array
 
 		local node_elev = math.floor(YWATER + elev / VERSCA)
@@ -120,6 +136,27 @@ function get_pixel(x,z)
 	local row = math.floor(length / 2) + z
 	local col = math.floor(width  / 2) + x
 	demtiff:seek("set", ( offset + (row * width) + col ))
-	covertiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32, covertiff:read(1):byte()
+	--covertiff:seek("set", ( offset + (row * width) + col ))
+	--return demtiff:read(1):byte() - 32, 0 --covertiff:read(1):byte()
+    --local imcommand = 'convert '..demfilename..': -format "%[pixel:s.p{'..x..','..z..'}]" info:'
+    --local imcommand = 'convert '..demfilename..':[1x1+'..x..'+'..z..'] txt:-'
+    
+    --building the imagemagick command, on windows need to use convert.exe
+    local imcommand = "convert "..demfilename.." -crop '1x1+"..col.."+"..row.."' -depth 16 -quiet txt:- | tail -n -1"
+    --print(imcommand)
+    local result = os.capture(imcommand)
+    --[[the result will be in the following format:
+    0,0: (70.1961%,74.902%,79.6078%)  #B3B3BFBFCBCB  srgb(179,191,203)
+    ]]
+    --print("raw result: " .. result .. "\n")
+    --local i, j = string.find(result, "0,0: (")
+    --print("i:" .. i..", j: "..j)
+    local k = string.find(result, ",", 8)
+    --print("k:" .. k)
+    result = string.sub(result, 7, k-2)
+    --print("parsed result: " .. result .. "\n")
+    result = math.floor(CEILING * tonumber(result) / 100)
+    --print(result)
+    return result, 0
+
 end

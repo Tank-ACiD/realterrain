@@ -1,11 +1,11 @@
 -- Parameters
-local DEM = 'eyeball.tif'
+local DEM = 'mandelbrot16bit.tif'
 local COVER = 'cover.tif'
 
 local VERSCA = 5 -- Vertical scale, meters per node
 local YWATER = 1
 
-offset = 0 --will be populated by ImageSize()
+local offset = 0 --will be populated by ImageSize()
 local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
 local width, length, format = ImageSize.imgsize(demfilename)
@@ -107,9 +107,6 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	--print ("[DEM] "..chugent.." ms  mapchunk ("..cx0..", "..math.floor((y0 + 32) / 80)..", "..cz0..")")
 end)
 
---for now we are going to assume 32 bit signed elevation pixels
---and a header offset of
-
 function get_pixel(x,z)
 	if x > math.ceil(width  / 2) or x < - math.floor(width  / 2)
 	or z > math.ceil(length / 2) or z < - math.floor(length / 2) then
@@ -117,9 +114,9 @@ function get_pixel(x,z)
 		return -1, 0 --off the TIFF,
 	end
 	
-	local row = math.floor(length / 2) + z
+	local row = math.floor(length / 2) + (z * 2) --times two for 16 bit
 	local col = math.floor(width  / 2) + x
-	demtiff:seek("set", ( offset + (row * width) + col ))
-	covertiff:seek("set", ( offset + (row * width) + col ))
-	return demtiff:read(1):byte() - 32, covertiff:read(1):byte()
+	demtiff:seek("set", ( offset + (row * width) + (col * 2))) --times two for 16bit
+	--covertiff:seek("set", ( offset + (row * width) + col ))
+	return tonumber(demtiff:read(2):byte()) - 32, 0 --read two bytes for 16 bit i forget what the -32 is for
 end

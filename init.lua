@@ -10,21 +10,14 @@ local VERSCA = 5 -- Vertical scale, meters per node
 local YWATER = 1
 
 offset = 0 --will be populated by ImageSize()
-local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
+--local ImageSize = dofile(minetest.get_modpath("realterrain").."/lua-imagesize-1.2/imagesize.lua")
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
-local width, length, format = ImageSize.imgsize(demfilename)
+--local width, length, format = ImageSize.imgsize(demfilename)
 local dem = imlib2.image.load(demfilename)
+local width = dem:get_width()
+local length = dem:get_height()
+print("width: "..width..", height: "..length)
 
-
--- middle of our image
-local demtiff --used by get_pixel()
-local rivertiff --used by get_river
-
-if width and length then
-	demtiff = io.open(minetest.get_modpath("realterrain").."/dem/"..DEM, "rb")
-	print("image info: w: "..width.." l: "..length.." format: "..format)
-	print("after tiff offset: "..offset)
-end
 --open the river tif with no safety checks
 covertiff = io.open(minetest.get_modpath("realterrain").."/dem/"..COVER, "rb")
 
@@ -127,5 +120,5 @@ function get_pixel(x,z)
     --print(pixel.red)
     --demtiff:seek("set", ( offset + (row * width) + col ))
 	covertiff:seek("set", ( offset + (row * width) + col ))
-	return pixel.red - 32, covertiff:read(1):byte()
+	return pixel.red, 0
 end

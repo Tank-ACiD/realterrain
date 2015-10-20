@@ -3,7 +3,7 @@ A Minetest mod that brings real world Terrain into the game (using freely availa
 
 use any image, even color (only red channel is used if color):
 
-![screenshot_51364970](https://cloud.githubusercontent.com/assets/12679496/8266202/46b5b892-16de-11e5-8bce-c3799cbace5c.png)
+![screenshot_126233205](https://cloud.githubusercontent.com/assets/12679496/8270171/b98d0144-178e-11e5-9a21-ddea2624fdb6.png)
 
 Supplied heightmap and landcover files:
 

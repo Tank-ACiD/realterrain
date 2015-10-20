@@ -241,7 +241,7 @@ function realterrain.show_rc_form(pname)
 	--Action buttons
 	local f_footer = 			"label[3,8.5;Delete the map, reset]"..
 								"button_exit[3,9;2,1;exit;Delete]"..
-                                "label[7,8.5;Reset the map only]"..
+                                "label[7,8.5;Apply changes only]"..
 								"button_exit[7,9;2,1;exit;Apply]"
     
     minetest.show_formspec(pname, "realterrain:rc_form", 

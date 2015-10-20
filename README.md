@@ -27,7 +27,6 @@ In game settings via the Realterrain Remote tool:
 - allow DEMs to tile according to standard naming conventions, or explicitly
 - allow in-game selection of image files?
 - allow output of heightmap and land cover to image files
-- 
 
 ### Changelog
 #### 0.0.2

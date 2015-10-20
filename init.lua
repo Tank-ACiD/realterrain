@@ -13,7 +13,7 @@ realterrain.settings = {} --form persistence
 realterrain.settings.yscale = 1
 realterrain.settings.xscale = 1
 realterrain.settings.zscale = 1
-realterrain.settings.waterlevel = 0
+realterrain.settings.waterlevel = 1
 
 local demfilename = minetest.get_modpath("realterrain").."/dem/"..DEM
 local dem = imlib2.image.load(demfilename)
@@ -66,26 +66,24 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local elev, cover = get_pixel(x, z) -- elevation in meters from DEM and water true/false
 				-- use demi to get elevation value from flat array
 
-		local node_elev = math.floor(tonumber(realterrain.settings.waterlevel) + elev / tonumber(realterrain.settings.yscale))
+		local node_elev = elev / tonumber(realterrain.settings.yscale)
 		local vi = area:index(x, y0, z) -- voxelmanip index
 		for y = y0, y1 do
 			if y < node_elev then
 				data[vi] = c_stone
-				-- decide on ores, caverns
 			elseif y == node_elev then
-				--if the river map says this is water then that's all we set
-				if cover > 225 then
+				if cover > 225 then --rivers
 					data[vi] = c_water
-				elseif cover > 128 then 
+				elseif cover > 99 then --roads
 					data[vi] = c_stone
 				else
 					if y <= tonumber(realterrain.settings.waterlevel) then
 						data[vi] = c_sand
 					else
 						if y > 100 then 
-							data[vi] = c_alpine -- shrubs?
+							data[vi] = c_alpine
 						else
-							data[vi] = c_grass -- decide on trees?
+							data[vi] = c_grass
 						end
 					end
 				end
@@ -113,7 +111,7 @@ end)
 function get_pixel(x,z)
     --local row = math.floor(length / 2) + (z / tonumber(realterrain.settings.zscale))
 	--local col = math.floor(width  / 2) + (x / tonumber(realterrain.settings.xscale))
-    local row,col = 0+x, 0-z
+    local row,col = 0-z, 0+x
 	local elev = dem:get_pixel(math.floor(col / tonumber(realterrain.settings.xscale)), math.floor(row / tonumber(realterrain.settings.zscale)))
     local cover = cover:get_pixel(math.floor(col / tonumber(realterrain.settings.xscale)), math.floor(row / tonumber(realterrain.settings.zscale)))
 	return elev.red, cover.red

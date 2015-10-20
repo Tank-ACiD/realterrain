@@ -215,11 +215,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			if fields.exit == "Delete" then
                 minetest.chat_send_player(pname, "You changed mapgen settings and are deleting the current map, restart the world!")
                 --kick all other players
-                
-                --delete the map.sqlite file
-                
-                --kick this player? @todo what if this is a dedicated server?
-                
+                local players = minetest.get_connected_players()
+				for k, player in next, players do
+					minetest.kick_player(player:get_player_name(), "map.sqlite deleted by admin, reload level")	
+				end
+				os.remove(WORLDPATH.."/map.sqlite")
                 return true
             elseif fields.exit == "Apply" then
                 minetest.chat_send_player(pname, "You changed the mapgen settings!")

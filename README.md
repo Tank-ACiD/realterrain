@@ -1,7 +1,7 @@
 # realterrain v.0.0.3
 A Minetest mod that brings real world Terrain into the game (using freely available DEM tiles). Any image can actually be used.
 
-use any image, even color (only red channel is used if color):
+use any image any bit-depth (suggested to convert to greyscale first):
 
 ![screenshot_126233205](https://cloud.githubusercontent.com/assets/12679496/8270171/b98d0144-178e-11e5-9a21-ddea2624fdb6.png)
 
@@ -36,6 +36,7 @@ Settings tool (Realterrain Remote)
 - allow for placement of buildings and other structures via .mts import
 - allow DEMs to tile according to standard naming conventions, or explicitly
 - allow output of heightmap and land cover to image files
+- admin priv for using the settings tool
 
 ### Changelog
 #### 0.0.3
@@ -43,7 +44,7 @@ Settings tool (Realterrain Remote)
 - included a biome painting layer, broke the "cover" layer into roads and water layers
 - added the files used to the settings tool
 - added strata for under the ground
-- in game map reset, admin priv for using the tool, kick all players on reset
+- in game map reset, kicks all players on reset, deletes map.sqlite file
 
 #### 0.0.2
 - switched to lua-imlib2 for support of all filetypes and bit depths

@@ -7,11 +7,26 @@ use any image, even color (only red channel is used if color):
 
 Supplied heightmap and landcover files:
 
-![screenshot_20151019_202537](https://cloud.githubusercontent.com/assets/12679496/10597094/fa84812a-769f-11e5-822e-d0aa8b7f6e6d.png)
+![biomes](https://cloud.githubusercontent.com/assets/12679496/10683908/fffbac4c-78fb-11e5-8190-4f0c0561b4b1.png)
+![dem](https://cloud.githubusercontent.com/assets/12679496/10683910/00078544-78fc-11e5-9806-1c0786b3fa4e.png)
+![roads](https://cloud.githubusercontent.com/assets/12679496/10683909/fffec6b6-78fb-11e5-9947-37de7a21d770.png)
+![water](https://cloud.githubusercontent.com/assets/12679496/10683911/000b474c-78fc-11e5-93f8-0aeb228446be.png)
 
 In game settings via the Realterrain Remote tool:
 
 ![screenshot_20151019_191222](https://cloud.githubusercontent.com/assets/12679496/10596232/de5796d0-7696-11e5-9dce-c991fa395f75.png)
+
+Biome painting (every 10% of grayscale is a new biome):
+
+![screenshot_20151020_152358](https://cloud.githubusercontent.com/assets/12679496/10622832/c79896c6-773e-11e5-881f-e8e13b906ea1.png)
+
+Rock strata:
+
+![screenshot_20151022_202823](https://cloud.githubusercontent.com/assets/12679496/10683866/771561ac-78fb-11e5-8fb4-6e9d876fcc67.png)
+
+Settings tool (Realterrain Remote)
+
+![screenshot_20151020_141450](https://cloud.githubusercontent.com/assets/12679496/10622825/c2506d06-773e-11e5-81e3-7ac00c0733fa.png)
 
 ### Dependencies:
 - Luarocks
@@ -29,6 +44,12 @@ In game settings via the Realterrain Remote tool:
 - allow output of heightmap and land cover to image files
 
 ### Changelog
+#### 0.0.3
+- switched to luarocks "magick" library
+- included a biome painting layer, broke the "cover" layer into roads and water layers
+- added the files used to the settings tool
+- added strata for under the ground
+
 #### 0.0.2
 - switched to lua-imlib2 for support of all filetypes and bit depths
 - supports downloaded GeoTIFF DEM tiles

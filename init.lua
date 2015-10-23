@@ -58,13 +58,13 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_cobble = minetest.get_content_id("default:cobble")
 	--biome specific cids
 	local cids = {}
-	cids[1]  = {grass=minetest.get_content_id("wool:black")}
+	cids[1]  = {grass=c_grass}
 	cids[2]  = {grass=minetest.get_content_id("wool:brown")}
 	cids[3]  = {grass=minetest.get_content_id("wool:dark_green")}
-	cids[4]  = {grass=minetest.get_content_id("wool:purple")}
+	cids[4]  = {grass=minetest.get_content_id("wool:violet")}
 	cids[5]  = {grass=minetest.get_content_id("wool:dark_grey")}
 	cids[6]  = {grass=minetest.get_content_id("wool:blue")}
-	cids[7]  = {grass=minetest.get_content_id("wool:green")}
+	cids[7]  = {grass=minetest.get_content_id("wool:grey")}
 	cids[8]  = {grass=minetest.get_content_id("wool:red")}
 	cids[9]  = {grass=minetest.get_content_id("wool:orange")}
 	cids[10] = {grass=minetest.get_content_id("wool:yellow")}
@@ -105,10 +105,10 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				end
 			--the surface layer, determined by the different cover files
 			elseif y == elev then
-				--rivers
+				--roads
 				if road > 0 then
 					data[vi] = c_cobble
-				 --roads
+				 --rivers and lakes
 				elseif water > 0 then
 					data[vi] = c_water
 				--biome cover

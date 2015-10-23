@@ -31,12 +31,10 @@ Settings tool (Realterrain Remote)
 
 ### Next steps:
 
-- in game map reset, admin priv for using the tool, kick all players on reset
-- improve land cover system, red channel for roads, blue for water, green for vegetation
-- allow for in-game assignment of colors to cover types
+- improve land cover system, add trees, make biomes better than just wool colors!
+- allow for in-game assignment of biome values, (water depth? road and building values?)
 - allow for placement of buildings and other structures via .mts import
 - allow DEMs to tile according to standard naming conventions, or explicitly
-- allow in-game selection of image files?
 - allow output of heightmap and land cover to image files
 
 ### Changelog
@@ -45,6 +43,7 @@ Settings tool (Realterrain Remote)
 - included a biome painting layer, broke the "cover" layer into roads and water layers
 - added the files used to the settings tool
 - added strata for under the ground
+- in game map reset, admin priv for using the tool, kick all players on reset
 
 #### 0.0.2
 - switched to lua-imlib2 for support of all filetypes and bit depths

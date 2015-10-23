@@ -72,8 +72,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local sidelen = x1 - x0 + 1
 	local ystridevm = sidelen + 32
 
-	local cx0 = math.floor((x0 + 32) / 80) -- mapchunk co-ordinates to select
-	local cz0 = math.floor((z0 + 32) / 80) -- the flat array of DEM values
+	local cx0 = math.floor((x0 + 32) / 80)
+	local cz0 = math.floor((z0 + 32) / 80) 
 	
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
@@ -89,17 +89,17 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			if y < elev then 
 				--create strata of stone, cobble, gravel, sand, coal, iron ore, etc
 				if y < elev - (30 + math.random(1,5)) then
-					data[vi] = c_sand
+					data[vi] = c_stone
 				elseif y < elev - (25 + math.random(1,5)) then
 					data[vi] = c_gravel
 				elseif y < elev - (20 + math.random(1,5)) then
-					data[vi] = c_stone
+					data[vi] = c_sand
 				elseif y < elev - (15 + math.random(1,5)) then
 					data[vi] = c_coal
 				elseif y < elev - (10 + math.random(1,5)) then
 					data[vi] = c_stone
 				elseif y < elev - (5 + math.random(1,5)) then
-					data[vi] = c_gravel
+					data[vi] = c_water
 				else
 					data[vi] = c_dirt
 				end
@@ -212,9 +212,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		--the main form
 		if formname == "realterrain:rc_form" then 
 			--actual form submissions
-			if fields.exit == "Delete" then
-                minetest.chat_send_player(pname, "You changed mapgen settings and are deleting the current map, restart the world!")
-                --kick all other players
+			if fields.exit == "Delete" then --@todo use the popup form do display a confirmation dialog box
+                --kick all players and delete the map file
                 local players = minetest.get_connected_players()
 				for k, player in next, players do
 					minetest.kick_player(player:get_player_name(), "map.sqlite deleted by admin, reload level")	

@@ -1,4 +1,4 @@
-# realterrain v.0.0.2
+# realterrain v.0.0.3
 A Minetest mod that brings real world Terrain into the game (using freely available DEM tiles). Any image can actually be used.
 
 use any image, even color (only red channel is used if color):
@@ -15,7 +15,7 @@ In game settings via the Realterrain Remote tool:
 
 ### Dependencies:
 - Luarocks
-- Luarocks imlib2 package
+- Luarocks magick package
 - Mod security disabled
 
 ### Next steps:

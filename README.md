@@ -12,10 +12,6 @@ Supplied heightmap and landcover files:
 ![roads](https://cloud.githubusercontent.com/assets/12679496/10683909/fffec6b6-78fb-11e5-9947-37de7a21d770.png)
 ![water](https://cloud.githubusercontent.com/assets/12679496/10683911/000b474c-78fc-11e5-93f8-0aeb228446be.png)
 
-In game settings via the Realterrain Remote tool:
-
-![screenshot_20151019_191222](https://cloud.githubusercontent.com/assets/12679496/10596232/de5796d0-7696-11e5-9dce-c991fa395f75.png)
-
 Biome painting (every 10% of grayscale is a new biome):
 
 ![screenshot_20151020_152358](https://cloud.githubusercontent.com/assets/12679496/10622832/c79896c6-773e-11e5-881f-e8e13b906ea1.png)

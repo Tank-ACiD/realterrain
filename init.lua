@@ -370,7 +370,7 @@ function realterrain.show_rc_form(pname)
 	end
 	--print("IMAGES in DEM folder: "..f_images)
     --form header
-	local f_header = 			"size[12,10]" ..
+	local f_header = 			"size[14,10]" ..
 								--"tabheader[0,0;tab;1D, 2D, 3D, Import, Manage;"..tab.."]"..
 								"label[0,0;You are at x= "..math.floor(ppos.x)..
 								" y= "..math.floor(ppos.y).." z= "..math.floor(ppos.z).." and mostly facing "..dir.."]"
@@ -422,109 +422,109 @@ end
 
 function realterrain.show_biome_form(pname)
 	minetest.show_formspec(pname,   "realterrain:biome_config",
-                                    "size[12,10]" ..
-                                    "button_exit[11,9;2,1;exit;Back]"..
-                                    "label[0.5,0.3;Biome]".."label[1.7,0.3;Cutoff]".."label[3,0.3;Grass Node]"..
-									"label[6,0.3;Tree MTS]".."label[9,0.3;Shrub Node]"..
+                                    "size[14,10]" ..
+                                    "label[12,0.01;Apply:]".."button_exit[13,0.01;1,1;exit;Back]"..
+                                    "label[0.2,0.01;Biome]".."label[1.7,0.01;Cutoff]".."label[3,0.01;Ground Node]"..
+									"label[6,0.01;Tree MTS]".."label[9,0.01;Shrub Node]"..
 									
-									"label[0.5,0.9;01]"..
-									"field[2,1;1,1;b01cut;;"..
+									"label[0.2,0.6;01]"..
+									"field[2,0.7;1,1;b01cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01cut")).."]" ..
-									"field[3,1;3,1;b01grass;;"..
+									"field[3,0.7;3,1;b01grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01grass")).."]" ..
-									"field[6,1;3,1;b01tree;;"..
+									"field[6,0.7;3,1;b01tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01tree")).."]" ..
-									"field[9,1;3,1;b01shrub;;"..
+									"field[9,0.7;3,1;b01shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01shrub")).."]" ..
 										
-									"label[0.5,1.9;02]"..
-									"field[2,2;1,1;b02cut;;"..
+									"label[0.2,1.6;02]"..
+									"field[2,1.7;1,1;b02cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02cut")).."]" ..
-									"field[3,2;3,1;b02grass;;"..
+									"field[3,1.7;3,1;b02grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02grass")).."]" ..
-									"field[6,2;3,1;b02tree;;"..
+									"field[6,1.7;3,1;b02tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02tree")).."]" ..
-									"field[9,2;3,1;b02shrub;;"..
+									"field[9,1.7;3,1;b02shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02shrub")).."]" ..
 										
-									"label[0.5,2.9;03]"..
-									"field[2,3;1,1;b03cut;;"..
+									"label[0.2,2.6;03]"..
+									"field[2,2.7;1,1;b03cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03cut")).."]" ..
-									"field[3,3;3,1;b03grass;;"..
+									"field[3,2.7;3,1;b03grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03grass")).."]" ..
-									"field[6,3;3,1;b03tree;;"..
+									"field[6,2.7;3,1;b03tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03tree")).."]" ..
-									"field[9,3;3,1;b03shrub;;"..
+									"field[9,2.7;3,1;b03shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03shrub")).."]" ..
 										
-									"label[0.5,3.9;04]"..
-									"field[2,4;1,1;b04cut;;"..
+									"label[0.2,3.6;04]"..
+									"field[2,3.7;1,1;b04cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04cut")).."]" ..
-									"field[3,4;3,1;b04grass;;"..
+									"field[3,3.7;3,1;b04grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04grass")).."]" ..
-									"field[6,4;3,1;b04tree;;"..
+									"field[6,3.7;3,1;b04tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04tree")).."]" ..
-									"field[9,4;3,1;b04shrub;;"..
+									"field[9,3.7;3,1;b04shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04shrub")).."]" ..
 										
-									"label[0.5,4.9;05]"..
-									"field[2,5;1,1;b05cut;;"..
+									"label[0.2,4.6;05]"..
+									"field[2,4.7;1,1;b05cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05cut")).."]" ..
-									"field[3,5;3,1;b05grass;;"..
+									"field[3,4.7;3,1;b05grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05grass")).."]" ..
-									"field[6,5;3,1;b05tree;;"..
+									"field[6,4.7;3,1;b05tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05tree")).."]" ..
-									"field[9,5;3,1;b05shrub;;"..
+									"field[9,4.7;3,1;b05shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05shrub")).."]" ..
 										
-									"label[0.5,5.9;06]"..
-									"field[2,6;1,1;b06cut;;"..
+									"label[0.2,5.6;06]"..
+									"field[2,5.7;1,1;b06cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06cut")).."]" ..
-									"field[3,6;3,1;b06grass;;"..
+									"field[3,5.7;3,1;b06grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06grass")).."]" ..
-									"field[6,6;3,1;b06tree;;"..
+									"field[6,5.7;3,1;b06tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06tree")).."]" ..
-									"field[9,6;3,1;b06shrub;;"..
+									"field[9,5.7;3,1;b06shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06shrub")).."]" ..
 										
-									"label[0.5,6.9;07]"..
-									"field[2,7;1,1;b07cut;;"..
+									"label[0.2,6.6;07]"..
+									"field[2,6.7;1,1;b07cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07cut")).."]" ..
-									"field[3,7;3,1;b07grass;;"..
+									"field[3,6.7;3,1;b07grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07grass")).."]" ..
-									"field[6,7;3,1;b07tree;;"..
+									"field[6,6.7;3,1;b07tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07tree")).."]" ..
-									"field[9,7;3,1;b07shrub;;"..
+									"field[9,6.7;3,1;b07shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07shrub")).."]" ..
 										
-									"label[0.5,7.9;08]"..
-									"field[2,8;1,1;b08cut;;"..
+									"label[0.2,7.6;08]"..
+									"field[2,7.7;1,1;b08cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08cut")).."]" ..
-									"field[3,8;3,1;b08grass;;"..
+									"field[3,7.7;3,1;b08grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08grass")).."]" ..
-									"field[6,8;3,1;b08tree;;"..
+									"field[6,7.7;3,1;b08tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08tree")).."]" ..
-									"field[9,8;3,1;b08shrub;;"..
+									"field[9,7.7;3,1;b08shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08shrub")).."]" ..
 										
-									"label[0.5,8.9;09]"..
-									"field[2,9;1,1;b09cut;;"..
+									"label[0.2,8.6;09]"..
+									"field[2,8.7;1,1;b09cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09cut")).."]" ..
-									"field[3,9;3,1;b09grass;;"..
+									"field[3,8.7;3,1;b09grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09grass")).."]" ..
-									"field[6,9;3,1;b09tree;;"..
+									"field[6,8.7;3,1;b09tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09tree")).."]" ..
-									"field[9,9;3,1;b09shrub;;"..
+									"field[9,8.7;3,1;b09shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09shrub")).."]" ..
 										
-									"label[0.5,9.9;10]"..
-									"field[2,10;1,1;b10cut;;"..
+									"label[0.2,9.6;10]"..
+									"field[2,9.7;1,1;b10cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10cut")).."]" ..
-									"field[3,10;3,1;b10grass;;"..
+									"field[3,9.7;3,1;b10grass;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10grass")).."]" ..
-									"field[6,10;3,1;b10tree;;"..
+									"field[6,9.7;3,1;b10tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10tree")).."]" ..
-									"field[9,10;3,1;b10shrub;;"..
+									"field[9,9.7;3,1;b10shrub;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10shrub")).."]"
 									
 	)

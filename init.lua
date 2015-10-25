@@ -191,8 +191,9 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local elev, biome, water, road = realterrain.get_pixel(x, z) -- elevation in meters from DEM and water true/false
 		--print("elev: "..elev..", biome: "..biome..", water: "..water..", road: "..road)
 		
-		local ground, shrub, sprob, tprob
+		local ground, shrub, sprob, tprob, tree
 		sprob, tprob = 10, 5
+		tree = "tree"
 		if     biome < tonumber(realterrain.get_setting("b01cut")) then
 			ground = cids[1].ground
 			shrub = cids[1].shrub
@@ -270,6 +271,10 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			elseif y == elev + 1 and water == 0 and road == 0 then
 				if math.random(0,100) <= sprob then
 					data[vi] = shrub
+				end
+				if math.random(0,100) <= tprob then
+					--import appropriate tree .mts
+					minetest.place_schematic({x=x,y=y,z=z}, MODPATH.."/schems/"..tree..".mts")
 				end
 			elseif y <= tonumber(realterrain.settings.waterlevel) then
 				data[vi] = c_water

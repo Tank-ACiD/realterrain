@@ -43,6 +43,7 @@ Settings tool (Realterrain Remote)
 #### 0.0.4
 - select layer files in game from a dropdown
 - made luafilesystem a dependency
+- vertical, east, and north offsets
 
 #### 0.0.3
 - switched to luarocks "magick" library

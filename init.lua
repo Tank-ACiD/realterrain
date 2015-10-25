@@ -229,16 +229,16 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						data[vi] = c_gravel
 					--default
 					else
-						if biome < 10  then data[vi] = cids[1].grass
-						elseif biome < 20  then data[vi] = cids[2].grass 
-						elseif biome < 30  then data[vi] = cids[3].grass
-						elseif biome < 40  then data[vi] = cids[4].grass
-						elseif biome < 50  then data[vi] = cids[5].grass
-						elseif biome < 60  then data[vi] = cids[6].grass
-						elseif biome < 70  then data[vi] = cids[7].grass
-						elseif biome < 80  then data[vi] = cids[8].grass
-						elseif biome < 90  then data[vi] = cids[9].grass
-						else   data[vi] = cids[10].grass
+						if     biome < tonumber(realterrain.get_setting("b01cut")) then data[vi] = cids[1].grass
+						elseif biome < tonumber(realterrain.get_setting("b02cut")) then data[vi] = cids[2].grass 
+						elseif biome < tonumber(realterrain.get_setting("b03cut")) then data[vi] = cids[3].grass
+						elseif biome < tonumber(realterrain.get_setting("b04cut")) then data[vi] = cids[4].grass
+						elseif biome < tonumber(realterrain.get_setting("b05cut")) then data[vi] = cids[5].grass
+						elseif biome < tonumber(realterrain.get_setting("b06cut")) then data[vi] = cids[6].grass
+						elseif biome < tonumber(realterrain.get_setting("b07cut")) then data[vi] = cids[7].grass
+						elseif biome < tonumber(realterrain.get_setting("b08cut")) then data[vi] = cids[8].grass
+						elseif biome < tonumber(realterrain.get_setting("b09cut")) then data[vi] = cids[9].grass
+						elseif biome < tonumber(realterrain.get_setting("b10cut")) then data[vi] = cids[10].grass
 						end
 					end
 				end

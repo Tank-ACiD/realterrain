@@ -22,43 +22,43 @@ realterrain.settings.filewater = 'water.tif'
 realterrain.settings.fileroads = 'roads.tif'
 realterrain.settings.filebiome = 'biomes.tif'
 realterrain.settings.b01cut = 10
-realterrain.settings.b01grass = "default:dirt_with_grass"
+realterrain.settings.b01ground = "default:dirt_with_grass"
 realterrain.settings.b01tree = "tree"
 realterrain.settings.b01shrub = "default:grass_1"
 realterrain.settings.b02cut = 20
-realterrain.settings.b02grass = "default:dirt_with_dry_grass"
+realterrain.settings.b02ground = "default:dirt_with_dry_grass"
 realterrain.settings.b02tree = "tree"
-realterrain.settings.b02shrub = "default:dry_grass_1"
+realterrain.settings.b02shrub = "default:dry_gass_1"
 realterrain.settings.b03cut = 30
-realterrain.settings.b03grass = "default:sand"
+realterrain.settings.b03ground = "default:sand"
 realterrain.settings.b03tree = "cactus"
 realterrain.settings.b03shrub = "default:dry_grass_1"
 realterrain.settings.b04cut = 40
-realterrain.settings.b04grass = "default:gravel"
+realterrain.settings.b04ground = "default:gravel"
 realterrain.settings.b04tree = "cactus"
 realterrain.settings.b04shrub = "default:dry_shrub"
 realterrain.settings.b05cut = 50
-realterrain.settings.b05grass = "default:clay"
+realterrain.settings.b05ground = "default:clay"
 realterrain.settings.b05tree = "tree"
 realterrain.settings.b05shrub = "default:dry_shrub"
 realterrain.settings.b06cut = 60
-realterrain.settings.b06grass = "default:stone"
+realterrain.settings.b06ground = "default:stone"
 realterrain.settings.b06tree = "tree"
 realterrain.settings.b06shrub = "default:junglegrass"
 realterrain.settings.b07cut = 70
-realterrain.settings.b07grass = "default:stone_with_iron"
+realterrain.settings.b07ground = "default:stone_with_iron"
 realterrain.settings.b07tree = "tree"
 realterrain.settings.b07shrub = "default:junglegrass"
 realterrain.settings.b08cut = 80
-realterrain.settings.b08grass = "default:stone_with_coal"
+realterrain.settings.b08ground = "default:stone_with_coal"
 realterrain.settings.b08tree = "tree"
 realterrain.settings.b08shrub = "default:junglegrass"
 realterrain.settings.b09cut = 90
-realterrain.settings.b09grass = "default:stone_with_copper"
+realterrain.settings.b09ground = "default:stone_with_copper"
 realterrain.settings.b09tree = "tree"
 realterrain.settings.b09shrub = "default:junglegrass"
 realterrain.settings.b10cut = 100
-realterrain.settings.b10grass = "default:dirt_with_snow"
+realterrain.settings.b10ground = "default:dirt_with_snow"
 realterrain.settings.b10tree = "tree"
 realterrain.settings.b10shrub = "default:dry_grass_1"
 
@@ -166,16 +166,16 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_cobble = minetest.get_content_id("default:cobble")
 	--biome specific cids
 	local cids = {}
-	cids[1]  = {grass=minetest.get_content_id(realterrain.settings.b01grass)}
-	cids[2]  = {grass=minetest.get_content_id(realterrain.settings.b02grass)}
-	cids[3]  = {grass=minetest.get_content_id(realterrain.settings.b03grass)}
-	cids[4]  = {grass=minetest.get_content_id(realterrain.settings.b04grass)}
-	cids[5]  = {grass=minetest.get_content_id(realterrain.settings.b05grass)}
-	cids[6]  = {grass=minetest.get_content_id(realterrain.settings.b06grass)}
-	cids[7]  = {grass=minetest.get_content_id(realterrain.settings.b07grass)}
-	cids[8]  = {grass=minetest.get_content_id(realterrain.settings.b08grass)}
-	cids[9]  = {grass=minetest.get_content_id(realterrain.settings.b09grass)}
-	cids[10] = {grass=minetest.get_content_id(realterrain.settings.b10grass)}
+	cids[1]  = {ground=minetest.get_content_id(realterrain.settings.b01ground), shrub=minetest.get_content_id(realterrain.settings.b01shrub)}
+	cids[2]  = {ground=minetest.get_content_id(realterrain.settings.b02ground), shrub=minetest.get_content_id(realterrain.settings.b02shrub)}
+	cids[3]  = {ground=minetest.get_content_id(realterrain.settings.b03ground), shrub=minetest.get_content_id(realterrain.settings.b03shrub)}
+	cids[4]  = {ground=minetest.get_content_id(realterrain.settings.b04ground), shrub=minetest.get_content_id(realterrain.settings.b04shrub)}
+	cids[5]  = {ground=minetest.get_content_id(realterrain.settings.b05ground), shrub=minetest.get_content_id(realterrain.settings.b05shrub)}
+	cids[6]  = {ground=minetest.get_content_id(realterrain.settings.b06ground), shrub=minetest.get_content_id(realterrain.settings.b06shrub)}
+	cids[7]  = {ground=minetest.get_content_id(realterrain.settings.b07ground), shrub=minetest.get_content_id(realterrain.settings.b07shrub)}
+	cids[8]  = {ground=minetest.get_content_id(realterrain.settings.b08ground), shrub=minetest.get_content_id(realterrain.settings.b08shrub)}
+	cids[9]  = {ground=minetest.get_content_id(realterrain.settings.b09ground), shrub=minetest.get_content_id(realterrain.settings.b09shrub)}
+	cids[10] = {ground=minetest.get_content_id(realterrain.settings.b10ground), shrub=minetest.get_content_id(realterrain.settings.b10shrub)}
 	
 	local sidelen = x1 - x0 + 1
 	local ystridevm = sidelen + 32
@@ -191,17 +191,38 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local elev, biome, water, road = realterrain.get_pixel(x, z) -- elevation in meters from DEM and water true/false
 		--print("elev: "..elev..", biome: "..biome..", water: "..water..", road: "..road)
 		
-		local ground
-		if     biome < tonumber(realterrain.get_setting("b01cut")) then ground = cids[1].grass
-		elseif biome < tonumber(realterrain.get_setting("b02cut")) then ground = cids[2].grass 
-		elseif biome < tonumber(realterrain.get_setting("b03cut")) then ground = cids[3].grass
-		elseif biome < tonumber(realterrain.get_setting("b04cut")) then ground = cids[4].grass
-		elseif biome < tonumber(realterrain.get_setting("b05cut")) then ground = cids[5].grass
-		elseif biome < tonumber(realterrain.get_setting("b06cut")) then ground = cids[6].grass
-		elseif biome < tonumber(realterrain.get_setting("b07cut")) then ground = cids[7].grass
-		elseif biome < tonumber(realterrain.get_setting("b08cut")) then ground = cids[8].grass
-		elseif biome < tonumber(realterrain.get_setting("b09cut")) then ground = cids[9].grass
-		elseif biome < tonumber(realterrain.get_setting("b10cut")) then ground = cids[10].grass
+		local ground, shrub, sprob, tprob
+		sprob, tprob = 10, 5
+		if     biome < tonumber(realterrain.get_setting("b01cut")) then
+			ground = cids[1].ground
+			shrub = cids[1].shrub
+		elseif biome < tonumber(realterrain.get_setting("b02cut")) then
+			ground = cids[2].ground
+			shrub = cids[2].shrub
+		elseif biome < tonumber(realterrain.get_setting("b03cut")) then
+			ground = cids[3].ground
+			shrub = cids[3].shrub
+		elseif biome < tonumber(realterrain.get_setting("b04cut")) then
+			ground = cids[4].ground
+			shrub = cids[4].shrub
+		elseif biome < tonumber(realterrain.get_setting("b05cut")) then
+			ground = cids[5].ground
+			shrub = cids[5].shrub
+		elseif biome < tonumber(realterrain.get_setting("b06cut")) then
+			ground = cids[6].ground
+			shrub = cids[6].shrub
+		elseif biome < tonumber(realterrain.get_setting("b07cut")) then
+			ground = cids[7].ground
+			shrub = cids[7].shrub
+		elseif biome < tonumber(realterrain.get_setting("b08cut")) then
+			ground = cids[8].ground
+			shrub = cids[8].shrub
+		elseif biome < tonumber(realterrain.get_setting("b09cut")) then
+			ground = cids[9].ground
+			shrub = cids[9].shrub
+		elseif biome < tonumber(realterrain.get_setting("b10cut")) then
+			ground = cids[10].ground
+			shrub = cids[10].shrub
 		end
 		
 		local vi = area:index(x, y0, z) -- voxelmanip index
@@ -244,6 +265,11 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					else
 						data[vi] = ground
 					end
+				end
+			--shrubs and trees one block above the ground
+			elseif y == elev + 1 and water == 0 and road == 0 then
+				if math.random(0,100) <= sprob then
+					data[vi] = shrub
 				end
 			elseif y <= tonumber(realterrain.settings.waterlevel) then
 				data[vi] = c_water
@@ -431,8 +457,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,0.6;01]"..
 									"field[2,0.7;1,1;b01cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01cut")).."]" ..
-									"field[3,0.7;3,1;b01grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b01grass")).."]" ..
+									"field[3,0.7;3,1;b01ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b01ground")).."]" ..
 									"field[6,0.7;3,1;b01tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b01tree")).."]" ..
 									"field[9,0.7;3,1;b01shrub;;"..
@@ -441,8 +467,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,1.6;02]"..
 									"field[2,1.7;1,1;b02cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02cut")).."]" ..
-									"field[3,1.7;3,1;b02grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b02grass")).."]" ..
+									"field[3,1.7;3,1;b02ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b02ground")).."]" ..
 									"field[6,1.7;3,1;b02tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b02tree")).."]" ..
 									"field[9,1.7;3,1;b02shrub;;"..
@@ -451,8 +477,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,2.6;03]"..
 									"field[2,2.7;1,1;b03cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03cut")).."]" ..
-									"field[3,2.7;3,1;b03grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b03grass")).."]" ..
+									"field[3,2.7;3,1;b03ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b03ground")).."]" ..
 									"field[6,2.7;3,1;b03tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b03tree")).."]" ..
 									"field[9,2.7;3,1;b03shrub;;"..
@@ -461,8 +487,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,3.6;04]"..
 									"field[2,3.7;1,1;b04cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04cut")).."]" ..
-									"field[3,3.7;3,1;b04grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b04grass")).."]" ..
+									"field[3,3.7;3,1;b04ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b04ground")).."]" ..
 									"field[6,3.7;3,1;b04tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b04tree")).."]" ..
 									"field[9,3.7;3,1;b04shrub;;"..
@@ -471,8 +497,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,4.6;05]"..
 									"field[2,4.7;1,1;b05cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05cut")).."]" ..
-									"field[3,4.7;3,1;b05grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b05grass")).."]" ..
+									"field[3,4.7;3,1;b05ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b05ground")).."]" ..
 									"field[6,4.7;3,1;b05tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b05tree")).."]" ..
 									"field[9,4.7;3,1;b05shrub;;"..
@@ -481,8 +507,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,5.6;06]"..
 									"field[2,5.7;1,1;b06cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06cut")).."]" ..
-									"field[3,5.7;3,1;b06grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b06grass")).."]" ..
+									"field[3,5.7;3,1;b06ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b06ground")).."]" ..
 									"field[6,5.7;3,1;b06tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b06tree")).."]" ..
 									"field[9,5.7;3,1;b06shrub;;"..
@@ -491,8 +517,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,6.6;07]"..
 									"field[2,6.7;1,1;b07cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07cut")).."]" ..
-									"field[3,6.7;3,1;b07grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b07grass")).."]" ..
+									"field[3,6.7;3,1;b07ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b07ground")).."]" ..
 									"field[6,6.7;3,1;b07tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b07tree")).."]" ..
 									"field[9,6.7;3,1;b07shrub;;"..
@@ -501,8 +527,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,7.6;08]"..
 									"field[2,7.7;1,1;b08cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08cut")).."]" ..
-									"field[3,7.7;3,1;b08grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b08grass")).."]" ..
+									"field[3,7.7;3,1;b08ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b08ground")).."]" ..
 									"field[6,7.7;3,1;b08tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b08tree")).."]" ..
 									"field[9,7.7;3,1;b08shrub;;"..
@@ -511,8 +537,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,8.6;09]"..
 									"field[2,8.7;1,1;b09cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09cut")).."]" ..
-									"field[3,8.7;3,1;b09grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b09grass")).."]" ..
+									"field[3,8.7;3,1;b09ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b09ground")).."]" ..
 									"field[6,8.7;3,1;b09tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b09tree")).."]" ..
 									"field[9,8.7;3,1;b09shrub;;"..
@@ -521,8 +547,8 @@ function realterrain.show_biome_form(pname)
 									"label[0.2,9.6;10]"..
 									"field[2,9.7;1,1;b10cut;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10cut")).."]" ..
-									"field[3,9.7;3,1;b10grass;;"..
-										minetest.formspec_escape(realterrain.get_setting("b10grass")).."]" ..
+									"field[3,9.7;3,1;b10ground;;"..
+										minetest.formspec_escape(realterrain.get_setting("b10ground")).."]" ..
 									"field[6,9.7;3,1;b10tree;;"..
 										minetest.formspec_escape(realterrain.get_setting("b10tree")).."]" ..
 									"field[9,9.7;3,1;b10shrub;;"..

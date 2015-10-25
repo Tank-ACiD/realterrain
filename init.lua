@@ -13,6 +13,9 @@ realterrain.settings.bits = 8 --@todo remove this setting when magick autodetect
 realterrain.settings.yscale = 1
 realterrain.settings.xscale = 1
 realterrain.settings.zscale = 1
+realterrain.settings.yoffset = 0
+realterrain.settings.xoffset = 0
+realterrain.settings.zoffset = 0
 realterrain.settings.waterlevel = 0
 realterrain.settings.alpinelevel = 200
 realterrain.settings.filedem   = 'dem.tif'
@@ -228,7 +231,7 @@ end)
 
 function realterrain.get_pixel(x,z)
 	local e, b, w, r = 0,0,0,0
-    local row,col = 0-z, 0+x
+    local row,col = 0 - z + tonumber(realterrain.settings.zoffset), 0 + x - tonumber(realterrain.settings.xoffset)
 	--adjust for x and z scales
     row = math.floor(row / tonumber(realterrain.settings.zscale))
     col = math.floor(col / tonumber(realterrain.settings.xscale))
@@ -244,7 +247,7 @@ function realterrain.get_pixel(x,z)
 	
     --adjust for bit depth and vscale
     e = math.floor(e * (2^tonumber(realterrain.settings.bits))) --@todo change when magick autodetects bit depth
-    e = math.floor(e / tonumber(realterrain.settings.yscale))
+    e = math.floor((e / tonumber(realterrain.settings.yscale)) + tonumber(realterrain.settings.yoffset))
     
 	--print("elev: "..e..", biome: "..b..", water: "..w..", road: "..r)
     return e, b, w, r
@@ -338,6 +341,12 @@ function realterrain.show_rc_form(pname)
                                     minetest.formspec_escape(realterrain.get_setting("waterlevel")).."]"..
                                 "field[1,6;4,1;alpinelevel;Alpine Level;"..
                                     minetest.formspec_escape(realterrain.get_setting("alpinelevel")).."]"..
+								"field[1,7;4,1;yoffset;Vertical Offset;"..
+                                    minetest.formspec_escape(realterrain.get_setting("yoffset")).."]" ..
+                                "field[1,8;4,1;xoffset;East Offset;"..
+                                    minetest.formspec_escape(realterrain.get_setting("xoffset")).."]" ..
+								"field[1,9;4,1;zoffset;North Offset;"..
+                                    minetest.formspec_escape(realterrain.get_setting("zoffset")).."]" ..
 								"label[6,1;Elevation File]"..
 								"dropdown[6,1.5;4,1;filedem;"..f_images..";"..
                                     realterrain.get_image_id(images, realterrain.get_setting("filedem")) .."]" ..

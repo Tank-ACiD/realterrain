@@ -154,6 +154,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local x0 = minp.x
 	local y0 = minp.y
 	local z0 = minp.z
+	local treemap = {}
 	
 	--content ids
 	local c_grass  = minetest.get_content_id("default:dirt_with_grass")
@@ -192,7 +193,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		--print("elev: "..elev..", biome: "..biome..", water: "..water..", road: "..road)
 		
 		local ground, shrub, sprob, tprob, tree
-		sprob, tprob = 10, 5
+		sprob, tprob = 5, 0.3
 		tree = "tree"
 		if     biome < tonumber(realterrain.get_setting("b01cut")) then
 			ground = cids[1].ground
@@ -273,8 +274,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					data[vi] = shrub
 				end
 				if math.random(0,100) <= tprob then
-					--import appropriate tree .mts
-					minetest.place_schematic({x=x,y=y,z=z}, MODPATH.."/schems/"..tree..".mts")
+					table.insert(treemap, {pos={x=x,y=y,z=z}, type="tree"})
 				end
 			elseif y <= tonumber(realterrain.settings.waterlevel) then
 				data[vi] = c_water
@@ -288,7 +288,12 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	vm:calc_lighting()
 	vm:write_to_map(data)
 	vm:update_liquids()
-
+	
+	--place all the trees
+	for k,v in next, treemap do
+		minetest.place_schematic({x=v.pos.x-3,y=v.pos.y,z=v.pos.z-3}, MODPATH.."/schems/"..v.type..".mts")
+	end
+	
 	local chugent = math.ceil((os.clock() - t0) * 1000)
 	--print ("[DEM] "..chugent.." ms  mapchunk ("..cx0..", "..math.floor((y0 + 32) / 80)..", "..cz0..")")
 end)

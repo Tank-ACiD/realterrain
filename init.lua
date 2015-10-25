@@ -6,6 +6,7 @@ realterrain.settings = {}
 local ie = minetest.request_insecure_environment()
 ie.require "luarocks.loader"
 local magick = ie.require "magick"
+local lfs = ie.require "lfs"
 
 --defaults
 realterrain.settings.bits = 8 --@todo remove this setting when magick autodetects bitdepth
@@ -18,6 +19,77 @@ realterrain.settings.filedem   = 'dem.tif'
 realterrain.settings.filewater = 'water.tif'
 realterrain.settings.fileroads = 'roads.tif'
 realterrain.settings.filebiome = 'biomes.tif'
+
+
+--called at each form submission
+function realterrain.save_settings()
+	local file = io.open(WORLDPATH.."/realterrain_settings", "w")
+	if file then
+		for k,v in next, realterrain.settings do
+			local line = {key=k, values=v}
+			file:write(minetest.serialize(line).."\n")
+		end
+		file:close()
+	end
+end
+-- load settings run at EOF at mod start
+function realterrain.load_settings()
+	local file = io.open(WORLDPATH.."/realterrain_settings", "r")
+	if file then
+		for line in file:lines() do
+			if line ~= "" then
+				local tline = minetest.deserialize(line)
+				realterrain.settings[tline.key] = tline.values
+			end
+		end
+		file:close()
+	end
+end
+--retrieve individual form field
+function realterrain.get_setting(setting)
+	if realterrain.settings ~= {} then
+		if realterrain.settings[setting] then
+			if realterrain.settings[setting] ~= "" then
+				return realterrain.settings[setting]
+			else
+				return false
+			end
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
+--read from file, various persisted settings
+realterrain.load_settings()
+
+function realterrain.list_images()
+	local list = {}
+	for entry in lfs.dir(MODPATH.."/dem/") do
+		local attr = lfs.attributes(MODPATH.."/dem/"..entry)
+		if attr.mode == "file" and attr.size > 0 then
+			
+			--local ext = magick.load_image(MODPATH.."/dem/"..entry) --@todo this is very slow, esp. with large files
+			--if img then
+				table.insert(list, entry)
+			--	img = nil
+			--end
+		end
+	end
+	return list
+end
+
+function realterrain.get_image_id(images_table, filename)
+	--returns the image id or if the image is not found it returns zero
+	for k,v in next, images_table do
+		if v == filename then
+			return k
+		end		
+	end
+	return 0
+end
 
 --@todo fail if there is no DEM?
 local dem = magick.load_image(MODPATH.."/dem/"..realterrain.settings.filedem)
@@ -99,7 +171,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				elseif y < elev - (10 + math.random(1,5)) then
 					data[vi] = c_stone
 				elseif y < elev - (5 + math.random(1,5)) then
-					data[vi] = c_water
+					data[vi] = c_sand
 				else
 					data[vi] = c_dirt
 				end
@@ -165,7 +237,7 @@ function realterrain.get_pixel(x,z)
     if ((col < 0) or (col > width) or (row < 0) or (row > length)) then return 0,0,0,0 end
     
     e = dem:get_pixel(col, row)
-    --print(elev)
+    --print("raw e: "..e)
 	if biomeimage then b = 100 * biomeimage:get_pixel(col, row) end--use breakpoints for different biomes
 	if waterimage then w = math.ceil(waterimage:get_pixel(col, row)) end --@todo use float for water depth?
 	if roadimage  then r = math.ceil(roadimage:get_pixel(col, row)) end --@todo use breakpoints for building height?
@@ -229,48 +301,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return true
 	end
 end)
---the formspecs and related settings and functions / selected field variables
 
---called at each form submission
-function realterrain.save_settings()
-	local file = io.open(WORLDPATH.."/realterrain_settings", "w")
-	if file then
-		for k,v in next, realterrain.settings do
-			local line = {key=k, values=v}
-			file:write(minetest.serialize(line).."\n")
-		end
-		file:close()
-	end
-end
--- load settings run at EOF at mod start
-function realterrain.load_settings()
-	local file = io.open(WORLDPATH.."/realterrain_settings", "r")
-	if file then
-		for line in file:lines() do
-			if line ~= "" then
-				local tline = minetest.deserialize(line)
-				realterrain.settings[tline.key] = tline.values
-			end
-		end
-		file:close()
-	end
-end
---retrieve individual form field
-function realterrain.get_setting(setting)
-	if realterrain.settings ~= {} then
-		if realterrain.settings[setting] then
-			if realterrain.settings[setting] ~= "" then
-				return realterrain.settings[setting]
-			else
-				return false
-			end
-		else
-			return false
-		end
-	else
-		return false
-	end
-end
 -- show the main remote control form
 function realterrain.show_rc_form(pname)
 	local player = minetest.get_player_by_name(pname)
@@ -283,6 +314,12 @@ function realterrain.show_rc_form(pname)
 	elseif degree <= 225 then dir = "South"
 	else   dir = "South" end
 	
+	local images = realterrain.list_images()
+	local f_images = ""
+	for k,v in next, images do
+		f_images = f_images .. v .. ","
+	end
+	--print("IMAGES in DEM folder: "..f_images)
     --form header
 	local f_header = 			"size[12,10]" ..
 								--"tabheader[0,0;tab;1D, 2D, 3D, Import, Manage;"..tab.."]"..
@@ -301,15 +338,18 @@ function realterrain.show_rc_form(pname)
                                     minetest.formspec_escape(realterrain.get_setting("waterlevel")).."]"..
                                 "field[1,6;4,1;alpinelevel;Alpine Level;"..
                                     minetest.formspec_escape(realterrain.get_setting("alpinelevel")).."]"..
-									
-								"field[6,3;4,1;filedem;Elevation File;"..
-                                    minetest.formspec_escape(realterrain.get_setting("filedem")).."]" ..
-								"field[6,4;4,1;filebiomes;Biome File;"..
-                                    minetest.formspec_escape(realterrain.get_setting("filebiome")).."]" ..
-								"field[6,5;4,1;filewater;Water File;"..
-                                    minetest.formspec_escape(realterrain.get_setting("filewater")).."]"..
-                                "field[6,6;4,1;fileroads;Road File;"..
-                                    minetest.formspec_escape(realterrain.get_setting("fileroads")).."]"
+								"label[6,1;Elevation File]"..
+								"dropdown[6,1.5;4,1;filedem;"..f_images..";"..
+                                    realterrain.get_image_id(images, realterrain.get_setting("filedem")) .."]" ..
+								"label[6,2.5;Biome File]"..
+								"dropdown[6,3;4,1;filebiome;"..f_images..";"..
+                                    realterrain.get_image_id(images, realterrain.get_setting("filebiome")) .."]" ..
+								"label[6,4;Water File]"..
+								"dropdown[6,4.5;4,1;filewater;"..f_images..";"..
+                                    realterrain.get_image_id(images, realterrain.get_setting("filewater")) .."]"..
+                                "label[6,5.5;Road File]"..
+								"dropdown[6,6;4,1;fileroads;"..f_images..";"..
+									realterrain.get_image_id(images, realterrain.get_setting("fileroads")) .."]"
 	--Action buttons
 	local f_footer = 			"label[3,8.5;Delete the map, reset]"..
 								"button_exit[3,9;2,1;exit;Delete]"..
@@ -334,6 +374,3 @@ function realterrain.show_popup(pname, message)
 	)
 	return true
 end
-
---read from file, various persisted settings
-realterrain.load_settings()

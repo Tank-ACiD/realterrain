@@ -1,4 +1,4 @@
-# realterrain v.0.0.3
+# realterrain v.0.0.4
 A Minetest mod that brings real world Terrain into the game (using freely available DEM tiles). Any image can actually be used.
 
 use any image any bit-depth (suggested to convert to greyscale first):
@@ -27,6 +27,7 @@ Settings tool (Realterrain Remote)
 ### Dependencies:
 - Luarocks
 - Luarocks magick package
+- Luarocks luafilesystem package
 - Mod security disabled
 
 ### Next steps:
@@ -39,6 +40,10 @@ Settings tool (Realterrain Remote)
 - admin priv for using the settings tool
 
 ### Changelog
+#### 0.0.4
+- select layer files in game from a dropdown
+- made luafilesystem a dependency
+
 #### 0.0.3
 - switched to luarocks "magick" library
 - included a biome painting layer, broke the "cover" layer into roads and water layers

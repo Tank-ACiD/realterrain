@@ -22,13 +22,16 @@ Rock strata:
 
 Settings tool (Realterrain Remote)
 
-![screenshot_20151020_141450](https://cloud.githubusercontent.com/assets/12679496/10622825/c2506d06-773e-11e5-81e3-7ac00c0733fa.png)
+![screenshot_20151025_071817](https://cloud.githubusercontent.com/assets/12679496/10716053/98fdf0ec-7ae8-11e5-8da7-470b839fdf40.png)
 
 ### Dependencies:
 - Luarocks
 - Luarocks magick package
 - Luarocks luafilesystem package
 - Mod security disabled
+
+### Upgrading:
+- delete the realterrain.settings file in the world folder, or just create a new world
 
 ### Next steps:
 
@@ -42,7 +45,6 @@ Settings tool (Realterrain Remote)
 ### Changelog
 #### 0.0.4
 - select layer files in game from a dropdown
-- made luafilesystem a dependency
 - vertical, east, and north offsets
 
 #### 0.0.3

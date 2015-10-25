@@ -21,7 +21,46 @@ realterrain.settings.filedem   = 'dem.tif'
 realterrain.settings.filewater = 'water.tif'
 realterrain.settings.fileroads = 'roads.tif'
 realterrain.settings.filebiome = 'biomes.tif'
-
+realterrain.settings.b01cut = 10
+realterrain.settings.b01grass = "default:dirt_with_grass"
+realterrain.settings.b01tree = "tree"
+realterrain.settings.b01shrub = "default:grass_1"
+realterrain.settings.b02cut = 20
+realterrain.settings.b02grass = "default:dirt_with_dry_grass"
+realterrain.settings.b02tree = "tree"
+realterrain.settings.b02shrub = "default:dry_grass_1"
+realterrain.settings.b03cut = 30
+realterrain.settings.b03grass = "default:sand"
+realterrain.settings.b03tree = "cactus"
+realterrain.settings.b03shrub = "default:dry_grass_1"
+realterrain.settings.b04cut = 40
+realterrain.settings.b04grass = "default:gravel"
+realterrain.settings.b04tree = "cactus"
+realterrain.settings.b04shrub = "default:dry_shrub"
+realterrain.settings.b05cut = 50
+realterrain.settings.b05grass = "default:clay"
+realterrain.settings.b05tree = "tree"
+realterrain.settings.b05shrub = "default:dry_shrub"
+realterrain.settings.b06cut = 60
+realterrain.settings.b06grass = "default:stone"
+realterrain.settings.b06tree = "tree"
+realterrain.settings.b06shrub = "default:junglegrass"
+realterrain.settings.b07cut = 70
+realterrain.settings.b07grass = "default:stone_with_iron"
+realterrain.settings.b07tree = "tree"
+realterrain.settings.b07shrub = "default:junglegrass"
+realterrain.settings.b08cut = 80
+realterrain.settings.b08grass = "default:stone_with_coal"
+realterrain.settings.b08tree = "tree"
+realterrain.settings.b08shrub = "default:junglegrass"
+realterrain.settings.b09cut = 90
+realterrain.settings.b09grass = "default:stone_with_copper"
+realterrain.settings.b09tree = "tree"
+realterrain.settings.b09shrub = "default:junglegrass"
+realterrain.settings.b10cut = 100
+realterrain.settings.b10grass = "default:dirt_with_snow"
+realterrain.settings.b10tree = "tree"
+realterrain.settings.b10shrub = "default:dry_grass_1"
 
 --called at each form submission
 function realterrain.save_settings()
@@ -127,16 +166,16 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_cobble = minetest.get_content_id("default:cobble")
 	--biome specific cids
 	local cids = {}
-	cids[1]  = {grass=c_grass}
-	cids[2]  = {grass=minetest.get_content_id("wool:brown")}
-	cids[3]  = {grass=minetest.get_content_id("wool:dark_green")}
-	cids[4]  = {grass=minetest.get_content_id("wool:violet")}
-	cids[5]  = {grass=minetest.get_content_id("wool:dark_grey")}
-	cids[6]  = {grass=minetest.get_content_id("wool:blue")}
-	cids[7]  = {grass=minetest.get_content_id("wool:grey")}
-	cids[8]  = {grass=minetest.get_content_id("wool:red")}
-	cids[9]  = {grass=minetest.get_content_id("wool:orange")}
-	cids[10] = {grass=minetest.get_content_id("wool:yellow")}
+	cids[1]  = {grass=minetest.get_content_id(realterrain.settings.b01grass)}
+	cids[2]  = {grass=minetest.get_content_id(realterrain.settings.b02grass)}
+	cids[3]  = {grass=minetest.get_content_id(realterrain.settings.b03grass)}
+	cids[4]  = {grass=minetest.get_content_id(realterrain.settings.b04grass)}
+	cids[5]  = {grass=minetest.get_content_id(realterrain.settings.b05grass)}
+	cids[6]  = {grass=minetest.get_content_id(realterrain.settings.b06grass)}
+	cids[7]  = {grass=minetest.get_content_id(realterrain.settings.b07grass)}
+	cids[8]  = {grass=minetest.get_content_id(realterrain.settings.b08grass)}
+	cids[9]  = {grass=minetest.get_content_id(realterrain.settings.b09grass)}
+	cids[10] = {grass=minetest.get_content_id(realterrain.settings.b10grass)}
 	
 	local sidelen = x1 - x0 + 1
 	local ystridevm = sidelen + 32
@@ -262,8 +301,8 @@ minetest.register_tool("realterrain:remote" , {
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if string.sub(formname, 1, 12) == "realterrain:" then
 		local wait = os.clock()
-		while os.clock() - wait < 0.05 do end --popups don't work without this see issue #30
-		--print("fields submitted: "..dump(fields))
+		while os.clock() - wait < 0.05 do end --popups don't work without this
+		print("fields submitted: "..dump(fields))
 		local pname = player:get_player_name()
 		
 		-- always save any form fields
@@ -287,13 +326,26 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				for k, player in next, players do
 					minetest.kick_player(player:get_player_name(), "map.sqlite deleted by admin, reload level")	
 				end
+				local wait = os.clock()
+				while os.clock() - wait < 0.1 do end -- map delete sometimes happens before kick
 				os.remove(WORLDPATH.."/map.sqlite")
                 return true
             elseif fields.exit == "Apply" then
                 minetest.chat_send_player(pname, "You changed the mapgen settings!")
                 return true
+			elseif fields.exit == "Biomes" then
+				realterrain.show_biome_form(pname)
+				return true
 			end
 			return true
+		end
+		
+		--biome config form
+		if formname == "realterrain:biome_config" then
+			if fields.exit == "Back" then
+				realterrain.show_rc_form(pname)
+				return true
+			end
 		end
 		return true
 	end
@@ -352,7 +404,8 @@ function realterrain.show_rc_form(pname)
                                     realterrain.get_image_id(images, realterrain.get_setting("filewater")) .."]"..
                                 "label[6,5.5;Road File]"..
 								"dropdown[6,6;4,1;fileroads;"..f_images..";"..
-									realterrain.get_image_id(images, realterrain.get_setting("fileroads")) .."]"
+									realterrain.get_image_id(images, realterrain.get_setting("fileroads")) .."]"..
+								"button_exit[10,3;2,1;exit;Biomes]"
 	--Action buttons
 	local f_footer = 			"label[3,8.5;Delete the map, reset]"..
 								"button_exit[3,9;2,1;exit;Delete]"..
@@ -365,6 +418,117 @@ function realterrain.show_rc_form(pname)
                         f_footer
     )
     return true
+end
+
+function realterrain.show_biome_form(pname)
+	minetest.show_formspec(pname,   "realterrain:biome_config",
+                                    "size[12,10]" ..
+                                    "button_exit[11,9;2,1;exit;Back]"..
+                                    "label[0.5,0.3;Biome]".."label[1.7,0.3;Cutoff]".."label[3,0.3;Grass Node]"..
+									"label[6,0.3;Tree MTS]".."label[9,0.3;Shrub Node]"..
+									
+									"label[0.5,0.9;01]"..
+									"field[2,1;1,1;b01cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b01cut")).."]" ..
+									"field[3,1;3,1;b01grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b01grass")).."]" ..
+									"field[6,1;3,1;b01tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b01tree")).."]" ..
+									"field[9,1;3,1;b01shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b01shrub")).."]" ..
+										
+									"label[0.5,1.9;02]"..
+									"field[2,2;1,1;b02cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b02cut")).."]" ..
+									"field[3,2;3,1;b02grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b02grass")).."]" ..
+									"field[6,2;3,1;b02tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b02tree")).."]" ..
+									"field[9,2;3,1;b02shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b02shrub")).."]" ..
+										
+									"label[0.5,2.9;03]"..
+									"field[2,3;1,1;b03cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b03cut")).."]" ..
+									"field[3,3;3,1;b03grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b03grass")).."]" ..
+									"field[6,3;3,1;b03tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b03tree")).."]" ..
+									"field[9,3;3,1;b03shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b03shrub")).."]" ..
+										
+									"label[0.5,3.9;04]"..
+									"field[2,4;1,1;b04cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b04cut")).."]" ..
+									"field[3,4;3,1;b04grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b04grass")).."]" ..
+									"field[6,4;3,1;b04tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b04tree")).."]" ..
+									"field[9,4;3,1;b04shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b04shrub")).."]" ..
+										
+									"label[0.5,4.9;05]"..
+									"field[2,5;1,1;b05cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b05cut")).."]" ..
+									"field[3,5;3,1;b05grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b05grass")).."]" ..
+									"field[6,5;3,1;b05tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b05tree")).."]" ..
+									"field[9,5;3,1;b05shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b05shrub")).."]" ..
+										
+									"label[0.5,5.9;06]"..
+									"field[2,6;1,1;b06cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b06cut")).."]" ..
+									"field[3,6;3,1;b06grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b06grass")).."]" ..
+									"field[6,6;3,1;b06tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b06tree")).."]" ..
+									"field[9,6;3,1;b06shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b06shrub")).."]" ..
+										
+									"label[0.5,6.9;07]"..
+									"field[2,7;1,1;b07cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b07cut")).."]" ..
+									"field[3,7;3,1;b07grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b07grass")).."]" ..
+									"field[6,7;3,1;b07tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b07tree")).."]" ..
+									"field[9,7;3,1;b07shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b07shrub")).."]" ..
+										
+									"label[0.5,7.9;08]"..
+									"field[2,8;1,1;b08cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b08cut")).."]" ..
+									"field[3,8;3,1;b08grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b08grass")).."]" ..
+									"field[6,8;3,1;b08tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b08tree")).."]" ..
+									"field[9,8;3,1;b08shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b08shrub")).."]" ..
+										
+									"label[0.5,8.9;09]"..
+									"field[2,9;1,1;b09cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b09cut")).."]" ..
+									"field[3,9;3,1;b09grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b09grass")).."]" ..
+									"field[6,9;3,1;b09tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b09tree")).."]" ..
+									"field[9,9;3,1;b09shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b09shrub")).."]" ..
+										
+									"label[0.5,9.9;10]"..
+									"field[2,10;1,1;b10cut;;"..
+										minetest.formspec_escape(realterrain.get_setting("b10cut")).."]" ..
+									"field[3,10;3,1;b10grass;;"..
+										minetest.formspec_escape(realterrain.get_setting("b10grass")).."]" ..
+									"field[6,10;3,1;b10tree;;"..
+										minetest.formspec_escape(realterrain.get_setting("b10tree")).."]" ..
+									"field[9,10;3,1;b10shrub;;"..
+										minetest.formspec_escape(realterrain.get_setting("b10shrub")).."]"
+									
+	)
+	return true
 end
 
 -- this is the form-error popup

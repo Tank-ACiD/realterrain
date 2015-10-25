@@ -191,6 +191,19 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local elev, biome, water, road = realterrain.get_pixel(x, z) -- elevation in meters from DEM and water true/false
 		--print("elev: "..elev..", biome: "..biome..", water: "..water..", road: "..road)
 		
+		local ground
+		if     biome < tonumber(realterrain.get_setting("b01cut")) then ground = cids[1].grass
+		elseif biome < tonumber(realterrain.get_setting("b02cut")) then ground = cids[2].grass 
+		elseif biome < tonumber(realterrain.get_setting("b03cut")) then ground = cids[3].grass
+		elseif biome < tonumber(realterrain.get_setting("b04cut")) then ground = cids[4].grass
+		elseif biome < tonumber(realterrain.get_setting("b05cut")) then ground = cids[5].grass
+		elseif biome < tonumber(realterrain.get_setting("b06cut")) then ground = cids[6].grass
+		elseif biome < tonumber(realterrain.get_setting("b07cut")) then ground = cids[7].grass
+		elseif biome < tonumber(realterrain.get_setting("b08cut")) then ground = cids[8].grass
+		elseif biome < tonumber(realterrain.get_setting("b09cut")) then ground = cids[9].grass
+		elseif biome < tonumber(realterrain.get_setting("b10cut")) then ground = cids[10].grass
+		end
+		
 		local vi = area:index(x, y0, z) -- voxelmanip index
 		for y = y0, y1 do
             --underground layers
@@ -209,7 +222,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				elseif y < elev - (5 + math.random(1,5)) then
 					data[vi] = c_sand
 				else
-					data[vi] = c_dirt
+					data[vi] = ground
 				end
 			--the surface layer, determined by the different cover files
 			elseif y == elev then
@@ -229,17 +242,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						data[vi] = c_gravel
 					--default
 					else
-						if     biome < tonumber(realterrain.get_setting("b01cut")) then data[vi] = cids[1].grass
-						elseif biome < tonumber(realterrain.get_setting("b02cut")) then data[vi] = cids[2].grass 
-						elseif biome < tonumber(realterrain.get_setting("b03cut")) then data[vi] = cids[3].grass
-						elseif biome < tonumber(realterrain.get_setting("b04cut")) then data[vi] = cids[4].grass
-						elseif biome < tonumber(realterrain.get_setting("b05cut")) then data[vi] = cids[5].grass
-						elseif biome < tonumber(realterrain.get_setting("b06cut")) then data[vi] = cids[6].grass
-						elseif biome < tonumber(realterrain.get_setting("b07cut")) then data[vi] = cids[7].grass
-						elseif biome < tonumber(realterrain.get_setting("b08cut")) then data[vi] = cids[8].grass
-						elseif biome < tonumber(realterrain.get_setting("b09cut")) then data[vi] = cids[9].grass
-						elseif biome < tonumber(realterrain.get_setting("b10cut")) then data[vi] = cids[10].grass
-						end
+						data[vi] = ground
 					end
 				end
 			elseif y <= tonumber(realterrain.settings.waterlevel) then

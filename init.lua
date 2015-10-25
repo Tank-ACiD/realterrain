@@ -302,7 +302,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if string.sub(formname, 1, 12) == "realterrain:" then
 		local wait = os.clock()
 		while os.clock() - wait < 0.05 do end --popups don't work without this
-		print("fields submitted: "..dump(fields))
+		--print("fields submitted: "..dump(fields))
 		local pname = player:get_player_name()
 		
 		-- always save any form fields
@@ -326,8 +326,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				for k, player in next, players do
 					minetest.kick_player(player:get_player_name(), "map.sqlite deleted by admin, reload level")	
 				end
-				local wait = os.clock()
-				while os.clock() - wait < 0.1 do end -- map delete sometimes happens before kick
 				os.remove(WORLDPATH.."/map.sqlite")
                 return true
             elseif fields.exit == "Apply" then

@@ -12,10 +12,6 @@ Supplied heightmap and landcover files:
 ![roads](https://cloud.githubusercontent.com/assets/12679496/10683909/fffec6b6-78fb-11e5-9947-37de7a21d770.png)
 ![water](https://cloud.githubusercontent.com/assets/12679496/10683911/000b474c-78fc-11e5-93f8-0aeb228446be.png)
 
-Biome painting (every 10% of grayscale is a new biome):
-
-![screenshot_20151020_152358](https://cloud.githubusercontent.com/assets/12679496/10622832/c79896c6-773e-11e5-881f-e8e13b906ea1.png)
-
 Rock strata:
 
 ![screenshot_20151022_202823](https://cloud.githubusercontent.com/assets/12679496/10683866/771561ac-78fb-11e5-8fb4-6e9d876fcc67.png)
@@ -23,6 +19,14 @@ Rock strata:
 Settings tool (Realterrain Remote)
 
 ![screenshot_20151025_071817](https://cloud.githubusercontent.com/assets/12679496/10716053/98fdf0ec-7ae8-11e5-8da7-470b839fdf40.png)
+
+Biomes tool:
+
+![screenshot_20151025_140019](https://cloud.githubusercontent.com/assets/12679496/10717816/c79ba880-7b20-11e5-87d0-0771f0478421.png)
+
+Trees and shrubs:
+
+![screenshot_20151025_140009](https://cloud.githubusercontent.com/assets/12679496/10717817/c79e4608-7b20-11e5-97e5-63c6116f480a.png)
 
 ### Dependencies:
 - Luarocks

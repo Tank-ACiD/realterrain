@@ -35,7 +35,6 @@ Settings tool (Realterrain Remote)
 
 ### Next steps:
 
-- improve land cover system, add trees, shrubs, probabilities
 - allow for placement of buildings and other structures via .mts import
 - allow DEMs to tile according to standard naming conventions, or explicitly
 - allow output of heightmap and land cover to image files
@@ -46,6 +45,7 @@ Settings tool (Realterrain Remote)
 - select layer files in game from a dropdown
 - vertical, east, and north offsets
 - in-game biome settings
+- trees and shrubs in biomes
 
 #### 0.0.3
 - switched to luarocks "magick" library

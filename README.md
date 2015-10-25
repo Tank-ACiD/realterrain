@@ -35,8 +35,7 @@ Settings tool (Realterrain Remote)
 
 ### Next steps:
 
-- improve land cover system, add trees, make biomes better than just wool colors!
-- allow for in-game assignment of biome values, (water depth? road and building values?)
+- improve land cover system, add trees, shrubs, probabilities
 - allow for placement of buildings and other structures via .mts import
 - allow DEMs to tile according to standard naming conventions, or explicitly
 - allow output of heightmap and land cover to image files
@@ -46,6 +45,7 @@ Settings tool (Realterrain Remote)
 #### 0.0.4
 - select layer files in game from a dropdown
 - vertical, east, and north offsets
+- in-game biome settings
 
 #### 0.0.3
 - switched to luarocks "magick" library

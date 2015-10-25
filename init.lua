@@ -6,7 +6,6 @@ realterrain.settings = {}
 local ie = minetest.request_insecure_environment()
 ie.require "luarocks.loader"
 local magick = ie.require "magick"
-local lfs = ie.require "lfs"
 
 --defaults
 realterrain.settings.bits = 8 --@todo remove this setting when magick autodetects bitdepth
@@ -69,17 +68,12 @@ end
 realterrain.load_settings()
 
 function realterrain.list_images()
+	local dir = MODPATH .. "/dem/"
 	local list = {}
-	for entry in lfs.dir(MODPATH.."/dem/") do
-		local attr = lfs.attributes(MODPATH.."/dem/"..entry)
-		if attr.mode == "file" and attr.size > 0 then
-			
-			--local ext = magick.load_image(MODPATH.."/dem/"..entry) --@todo this is very slow, esp. with large files
-			--if img then
-				table.insert(list, entry)
-			--	img = nil
-			--end
-		end
+	local p = io.popen('find "'..dir..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
+    for file in p:lines() do                         --Loop through all files
+        file = string.sub(file, #dir + 1)
+		table.insert(list, file)    
 	end
 	return list
 end

@@ -31,7 +31,6 @@ Trees and shrubs:
 ### Dependencies:
 - Luarocks
 - Luarocks magick package
-- Luarocks luafilesystem package
 - Mod security disabled
 
 ### Upgrading:

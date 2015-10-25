@@ -33,6 +33,14 @@ Trees and shrubs:
 - Luarocks magick package
 - Mod security disabled
 
+### Instructions
+- install the dependencies and the mod as usual
+- launch the game with mod enabled, default settings should work
+- use the Realterrain Remote to change the settings, or
+- edit the mod defaults section
+- create greyscale images for heightmap, biomes, rivers and roads if desired (heightmap is required) these should be the same length and width
+- enjoy!
+
 ### Upgrading:
 - delete the realterrain.settings file in the world folder, or just create a new world
 

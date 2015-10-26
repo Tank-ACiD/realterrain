@@ -1,7 +1,9 @@
 MODPATH = minetest.get_modpath("realterrain")
-WORLDPATH = minetest.get_worldpath() 
+WORLDPATH = minetest.get_worldpath()
+RASTERS = MODPATH .. "/rasters/"
 local realterrain = {}
 realterrain.settings = {}
+
 
 local ie = minetest.request_insecure_environment()
 ie.require "luarocks.loader"
@@ -141,12 +143,12 @@ function realterrain.esc(str)
 	if str == "" or not str then return "" else return minetest.formspec_escape(str) end
 end
 
-function realterrain.list_images()
-	local dir = MODPATH .. "/dem/"
+--@todo make this function cross-platform so we can use dropdowns in the settings menu
+--[[function realterrain.list_images()
 	local list = {}
-	local p = io.popen('find "'..dir..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
+	local p = io.popen('find "'..RASTERS..'" -type f')  --Open directory look for files, save data in p. By giving '-type f' as parameter, it returns all files.     
     for file in p:lines() do                         --Loop through all files
-        file = string.sub(file, #dir + 1)
+        file = string.sub(file, #RASTERS + 1)
 		table.insert(list, file)    
 	end
 	return list
@@ -160,17 +162,17 @@ function realterrain.get_image_id(images_table, filename)
 		end		
 	end
 	return 0
-end
+end--]]
 
 --@todo fail if there is no DEM?
-local dem = magick.load_image(MODPATH.."/dem/"..realterrain.settings.filedem)
+local dem = magick.load_image(RASTERS..realterrain.settings.filedem)
 local width = dem:get_width()
 local length = dem:get_height()
 --print("width: "..width..", height: "..length)
 local biomeimage, waterimage, roadimage
-biomeimage = magick.load_image(MODPATH.."/dem/"..realterrain.settings.filebiome)
-waterimage = magick.load_image(MODPATH.."/dem/"..realterrain.settings.filewater)
-roadimage  = magick.load_image(MODPATH.."/dem/"..realterrain.settings.fileroads)
+biomeimage = magick.load_image(RASTERS..realterrain.settings.filebiome)
+waterimage = magick.load_image(RASTERS..realterrain.settings.filewater)
+roadimage  = magick.load_image(RASTERS..realterrain.settings.fileroads)
 --@todo throw warning if image sizes do not match the dem size
 
 -- Set mapgen parameters
@@ -463,12 +465,12 @@ function realterrain.show_rc_form(pname)
 	elseif degree <= 225 then dir = "South"
 	else   dir = "South" end
 	
-	local images = realterrain.list_images()
+	--[[local images = realterrain.list_images()
 	local f_images = ""
 	for k,v in next, images do
 		f_images = f_images .. v .. ","
 	end
-	--print("IMAGES in DEM folder: "..f_images)
+	--print("IMAGES in DEM folder: "..f_images)--]]
     --form header
 	local f_header = 			"size[14,10]" ..
 								--"tabheader[0,0;tab;1D, 2D, 3D, Import, Manage;"..tab.."]"..
@@ -493,7 +495,7 @@ function realterrain.show_rc_form(pname)
                                     realterrain.esc(realterrain.get_setting("xoffset")).."]" ..
 								"field[1,9;4,1;zoffset;North Offset;"..
                                     realterrain.esc(realterrain.get_setting("zoffset")).."]" ..
-								"label[6,1;Elevation File]"..
+								--[["label[6,1;Elevation File]"..
 								"dropdown[6,1.5;4,1;filedem;"..f_images..";"..
                                     realterrain.get_image_id(images, realterrain.get_setting("filedem")) .."]" ..
 								"label[6,2.5;Biome File]"..
@@ -504,7 +506,15 @@ function realterrain.show_rc_form(pname)
                                     realterrain.get_image_id(images, realterrain.get_setting("filewater")) .."]"..
                                 "label[6,5.5;Road File]"..
 								"dropdown[6,6;4,1;fileroads;"..f_images..";"..
-									realterrain.get_image_id(images, realterrain.get_setting("fileroads")) .."]"..
+									realterrain.get_image_id(images, realterrain.get_setting("fileroads")) .."]"..--]]
+								"field[6,2;4,1;filedem;Elevation File;" ..
+                                    realterrain.get_setting("filedem") .."]" ..
+								"field[6,3;4,1;filebiome;Biome File;" ..
+                                    realterrain.get_setting("filebiome") .."]" ..
+								"field[6,4;4,1;filewater;Water File;" ..
+                                    realterrain.get_setting("filewater") .."]"..
+								"field[6,5;4,1;fileroads;Roads File;" ..
+									realterrain.get_setting("fileroads") .."]"..
 								"button_exit[10,3;2,1;exit;Biomes]"
 	--Action buttons
 	local f_footer = 			"label[3,8.5;Delete the map, reset]"..

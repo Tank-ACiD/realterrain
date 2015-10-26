@@ -442,7 +442,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		
 		--biome config form
 		if formname == "realterrain:biome_config" then
-			if fields.exit == "Back" then
+			if fields.exit == "Apply" then
 				realterrain.show_rc_form(pname)
 				return true
 			end
@@ -521,112 +521,146 @@ function realterrain.show_rc_form(pname)
 end
 
 function realterrain.show_biome_form(pname)
+	local col1,col2,col3,col4,col5,col6,col7,col8 = 0.01,0.7,1.7,4.7,7.5,8.6,11.4,13
+	local row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11 = 0.01,0.7,1.7,2.7,3.7,4.7,5.7,6.7,7.7,8.7,9.7
+	local f_header = 	"size[14,10]" ..
+						"button_exit["..col8..",0.01;1,1;exit;Apply]"..
+						"label["..col1..",0.01;B]".."label["..col2..",0.01;Cutoff]".."label["..col3..",0.01;Ground Node]"..
+						"label["..col4..",0.01;Tree MTS]".."label["..col5..",0.01;Prob]".."label["..col6..",0.01;Shrub Node]"..
+						"label["..col7..",0.01;Prob]"
+	local f1 =	"label["..col1..",0.6;01]"..
+				"field["..col2..",0.7;1,1;b01cut;;"..
+					realterrain.esc(realterrain.get_setting("b01cut")).."]" ..
+				"field["..col3..",0.7;3,1;b01ground;;"..
+					realterrain.esc(realterrain.get_setting("b01ground")).."]" ..
+				"field["..col4..",0.7;3,1;b01tree;;"..
+					realterrain.esc(realterrain.get_setting("b01tree")).."]" ..
+				"field["..col5..",0.7;1,1;b01tprob;;"..
+					realterrain.esc(realterrain.get_setting("b01tprob")).."]" ..
+				"field["..col6..",0.7;3,1;b01shrub;;"..
+					realterrain.esc(realterrain.get_setting("b01shrub")).."]"..
+				"field["..col7..",0.7;1,1;b01sprob;;"..
+					realterrain.esc(realterrain.get_setting("b01sprob")).."]"
+	local f2 =	"label["..col1..",1.6;02]"..
+				"field["..col2..",1.7;1,1;b02cut;;"..
+					realterrain.esc(realterrain.get_setting("b02cut")).."]" ..
+				"field["..col3..",1.7;3,1;b02ground;;"..
+					realterrain.esc(realterrain.get_setting("b02ground")).."]" ..
+				"field["..col4..",1.7;3,1;b02tree;;"..
+					realterrain.esc(realterrain.get_setting("b02tree")).."]" ..
+				"field["..col5..",1.7;1,1;b02tprob;;"..
+					realterrain.esc(realterrain.get_setting("b02tprob")).."]" ..
+				"field["..col6..",1.7;3,1;b02shrub;;"..
+					realterrain.esc(realterrain.get_setting("b02shrub")).."]" ..
+				"field["..col7..",1.7;1,1;b02sprob;;"..
+					realterrain.esc(realterrain.get_setting("b02sprob")).."]"
+	local f3 =	"label["..col1..",2.6;03]"..
+				"field["..col2..",2.7;1,1;b03cut;;"..
+					realterrain.esc(realterrain.get_setting("b03cut")).."]" ..
+				"field["..col3..",2.7;3,1;b03ground;;"..
+					realterrain.esc(realterrain.get_setting("b03ground")).."]" ..
+				"field["..col4..",2.7;3,1;b03tree;;"..
+					realterrain.esc(realterrain.get_setting("b03tree")).."]" ..
+				"field["..col5..",2.7;1,1;b03tprob;;"..
+					realterrain.esc(realterrain.get_setting("b03tprob")).."]" ..
+				"field["..col6..",2.7;3,1;b03shrub;;"..
+					realterrain.esc(realterrain.get_setting("b03shrub")).."]" ..
+				"field["..col7..",2.7;1,1;b03sprob;;"..
+					realterrain.esc(realterrain.get_setting("b03sprob")).."]"
+	local f4 = "label["..col1..",3.6;04]"..
+				"field["..col2..",3.7;1,1;b04cut;;"..
+					realterrain.esc(realterrain.get_setting("b04cut")).."]" ..
+				"field["..col3..",3.7;3,1;b04ground;;"..
+					realterrain.esc(realterrain.get_setting("b04ground")).."]" ..
+				"field["..col4..",3.7;3,1;b04tree;;"..
+					realterrain.esc(realterrain.get_setting("b04tree")).."]" ..
+				"field["..col5..",3.7;1,1;b04tprob;;"..
+					realterrain.esc(realterrain.get_setting("b04tprob")).."]" ..
+				"field["..col6..",3.7;3,1;b04shrub;;"..
+					realterrain.esc(realterrain.get_setting("b04shrub")).."]" ..
+				"field["..col7..",3.7;1,1;b04sprob;;"..
+					realterrain.esc(realterrain.get_setting("b04sprob")).."]"
+	local f5 =	"label["..col1..",4.6;05]"..
+				"field["..col2..",4.7;1,1;b05cut;;"..
+					realterrain.esc(realterrain.get_setting("b05cut")).."]" ..
+				"field["..col3..",4.7;3,1;b05ground;;"..
+					realterrain.esc(realterrain.get_setting("b05ground")).."]" ..
+				"field["..col4..",4.7;3,1;b05tree;;"..
+					realterrain.esc(realterrain.get_setting("b05tree")).."]" ..
+				"field["..col5..",4.7;1,1;b05tprob;;"..
+					realterrain.esc(realterrain.get_setting("b05tprob")).."]" ..
+				"field["..col6..",4.7;3,1;b05shrub;;"..
+					realterrain.esc(realterrain.get_setting("b05shrub")).."]" ..
+				"field["..col7..",4.7;1,1;b05sprob;;"..
+					realterrain.esc(realterrain.get_setting("b05sprob")).."]"
+	local f6 =	"label["..col1..",5.6;06]"..
+				"field["..col2..",5.7;1,1;b06cut;;"..
+					realterrain.esc(realterrain.get_setting("b06cut")).."]" ..
+				"field["..col3..",5.7;3,1;b06ground;;"..
+					realterrain.esc(realterrain.get_setting("b06ground")).."]" ..
+				"field["..col4..",5.7;3,1;b06tree;;"..
+					realterrain.esc(realterrain.get_setting("b06tree")).."]" ..
+				"field["..col5..",5.7;1,1;b06tprob;;"..
+					realterrain.esc(realterrain.get_setting("b06tprob")).."]" ..
+				"field["..col6..",5.7;3,1;b06shrub;;"..
+					realterrain.esc(realterrain.get_setting("b06shrub")).."]" ..
+				"field["..col7..",5.7;1,1;b06sprob;;"..
+					realterrain.esc(realterrain.get_setting("b06sprob")).."]"
+	local f7 =	"label["..col1..",6.6;07]"..
+				"field["..col2..",6.7;1,1;b07cut;;"..
+					realterrain.esc(realterrain.get_setting("b07cut")).."]" ..
+				"field["..col3..",6.7;3,1;b07ground;;"..
+					realterrain.esc(realterrain.get_setting("b07ground")).."]" ..
+				"field["..col4..",6.7;3,1;b07tree;;"..
+					realterrain.esc(realterrain.get_setting("b07tree")).."]" ..
+				"field["..col5..",6.7;1,1;b07tprob;;"..
+					realterrain.esc(realterrain.get_setting("b07tprob")).."]" ..
+				"field["..col6..",6.7;3,1;b07shrub;;"..
+					realterrain.esc(realterrain.get_setting("b07shrub")).."]" ..
+				"field["..col7..",6.7;1,1;b07sprob;;"..
+					realterrain.esc(realterrain.get_setting("b07sprob")).."]"
+	local f8 =	"label["..col1..",7.6;08]"..
+				"field["..col2..",7.7;1,1;b08cut;;"..
+					realterrain.esc(realterrain.get_setting("b08cut")).."]" ..
+				"field["..col3..",7.7;3,1;b08ground;;"..
+					realterrain.esc(realterrain.get_setting("b08ground")).."]" ..
+				"field["..col4..",7.7;3,1;b08tree;;"..
+					realterrain.esc(realterrain.get_setting("b08tree")).."]" ..
+				"field["..col5..",7.7;1,1;b08tprob;;"..
+					realterrain.esc(realterrain.get_setting("b08tprob")).."]" ..
+				"field["..col6..",7.7;3,1;b08shrub;;"..
+					realterrain.esc(realterrain.get_setting("b08shrub")).."]" ..
+				"field["..col7..",7.7;1,1;b08sprob;;"..
+					realterrain.esc(realterrain.get_setting("b08sprob")).."]"
+	local f9 =	"label["..col1..",8.6;09]"..
+				"field["..col2..",8.7;1,1;b09cut;;"..
+					realterrain.esc(realterrain.get_setting("b09cut")).."]" ..
+				"field["..col3..",8.7;3,1;b09ground;;"..
+					realterrain.esc(realterrain.get_setting("b09ground")).."]" ..
+				"field["..col4..",8.7;3,1;b09tree;;"..
+					realterrain.esc(realterrain.get_setting("b09tree")).."]" ..
+				"field["..col5..",8.7;1,1;b09tprob;;"..
+					realterrain.esc(realterrain.get_setting("b09tprob")).."]" ..
+				"field["..col6..",8.7;3,1;b09shrub;;"..
+					realterrain.esc(realterrain.get_setting("b09shrub")).."]" ..
+				"field["..col7..",8.7;1,1;b09sprob;;"..
+					realterrain.esc(realterrain.get_setting("b09sprob")).."]"
+	local f10 =	"label["..col1..",9.6;10]"..
+				"field["..col2..",9.7;1,1;b10cut;;"..
+					realterrain.esc(realterrain.get_setting("b10cut")).."]" ..
+				"field["..col3..",9.7;3,1;b10ground;;"..
+					realterrain.esc(realterrain.get_setting("b10ground")).."]" ..
+				"field["..col4..",9.7;3,1;b10tree;;"..
+					realterrain.esc(realterrain.get_setting("b10tree")).."]" ..
+				"field["..col5..",9.7;1,1;b10tprob;;"..
+					realterrain.esc(realterrain.get_setting("b10tprob")).."]" ..
+				"field["..col6..",9.7;3,1;b10shrub;;"..
+					realterrain.esc(realterrain.get_setting("b10shrub")).."]" ..
+				"field["..col7..",9.7;1,1;b10sprob;;"..
+					realterrain.esc(realterrain.get_setting("b10sprob")).."]"
+					
 	minetest.show_formspec(pname,   "realterrain:biome_config",
-                                    "size[14,10]" ..
-                                    "label[12,0.01;Apply:]".."button_exit[13,0.01;1,1;exit;Back]"..
-                                    "label[0.2,0.01;Biome]".."label[1.7,0.01;Cutoff]".."label[3,0.01;Ground Node]"..
-									"label[6,0.01;Tree MTS]".."label[9,0.01;Shrub Node]"..
-									
-									"label[0.2,0.6;01]"..
-									"field[2,0.7;1,1;b01cut;;"..
-										realterrain.esc(realterrain.get_setting("b01cut")).."]" ..
-									"field[3,0.7;3,1;b01ground;;"..
-										realterrain.esc(realterrain.get_setting("b01ground")).."]" ..
-									"field[6,0.7;3,1;b01tree;;"..
-										realterrain.esc(realterrain.get_setting("b01tree")).."]" ..
-									"field[9,0.7;3,1;b01shrub;;"..
-										realterrain.esc(realterrain.get_setting("b01shrub")).."]" ..
-										
-									"label[0.2,1.6;02]"..
-									"field[2,1.7;1,1;b02cut;;"..
-										realterrain.esc(realterrain.get_setting("b02cut")).."]" ..
-									"field[3,1.7;3,1;b02ground;;"..
-										realterrain.esc(realterrain.get_setting("b02ground")).."]" ..
-									"field[6,1.7;3,1;b02tree;;"..
-										realterrain.esc(realterrain.get_setting("b02tree")).."]" ..
-									"field[9,1.7;3,1;b02shrub;;"..
-										realterrain.esc(realterrain.get_setting("b02shrub")).."]" ..
-										
-									"label[0.2,2.6;03]"..
-									"field[2,2.7;1,1;b03cut;;"..
-										realterrain.esc(realterrain.get_setting("b03cut")).."]" ..
-									"field[3,2.7;3,1;b03ground;;"..
-										realterrain.esc(realterrain.get_setting("b03ground")).."]" ..
-									"field[6,2.7;3,1;b03tree;;"..
-										realterrain.esc(realterrain.get_setting("b03tree")).."]" ..
-									"field[9,2.7;3,1;b03shrub;;"..
-										realterrain.esc(realterrain.get_setting("b03shrub")).."]" ..
-										
-									"label[0.2,3.6;04]"..
-									"field[2,3.7;1,1;b04cut;;"..
-										realterrain.esc(realterrain.get_setting("b04cut")).."]" ..
-									"field[3,3.7;3,1;b04ground;;"..
-										realterrain.esc(realterrain.get_setting("b04ground")).."]" ..
-									"field[6,3.7;3,1;b04tree;;"..
-										realterrain.esc(realterrain.get_setting("b04tree")).."]" ..
-									"field[9,3.7;3,1;b04shrub;;"..
-										realterrain.esc(realterrain.get_setting("b04shrub")).."]" ..
-										
-									"label[0.2,4.6;05]"..
-									"field[2,4.7;1,1;b05cut;;"..
-										realterrain.esc(realterrain.get_setting("b05cut")).."]" ..
-									"field[3,4.7;3,1;b05ground;;"..
-										realterrain.esc(realterrain.get_setting("b05ground")).."]" ..
-									"field[6,4.7;3,1;b05tree;;"..
-										realterrain.esc(realterrain.get_setting("b05tree")).."]" ..
-									"field[9,4.7;3,1;b05shrub;;"..
-										realterrain.esc(realterrain.get_setting("b05shrub")).."]" ..
-										
-									"label[0.2,5.6;06]"..
-									"field[2,5.7;1,1;b06cut;;"..
-										realterrain.esc(realterrain.get_setting("b06cut")).."]" ..
-									"field[3,5.7;3,1;b06ground;;"..
-										realterrain.esc(realterrain.get_setting("b06ground")).."]" ..
-									"field[6,5.7;3,1;b06tree;;"..
-										realterrain.esc(realterrain.get_setting("b06tree")).."]" ..
-									"field[9,5.7;3,1;b06shrub;;"..
-										realterrain.esc(realterrain.get_setting("b06shrub")).."]" ..
-										
-									"label[0.2,6.6;07]"..
-									"field[2,6.7;1,1;b07cut;;"..
-										realterrain.esc(realterrain.get_setting("b07cut")).."]" ..
-									"field[3,6.7;3,1;b07ground;;"..
-										realterrain.esc(realterrain.get_setting("b07ground")).."]" ..
-									"field[6,6.7;3,1;b07tree;;"..
-										realterrain.esc(realterrain.get_setting("b07tree")).."]" ..
-									"field[9,6.7;3,1;b07shrub;;"..
-										realterrain.esc(realterrain.get_setting("b07shrub")).."]" ..
-										
-									"label[0.2,7.6;08]"..
-									"field[2,7.7;1,1;b08cut;;"..
-										realterrain.esc(realterrain.get_setting("b08cut")).."]" ..
-									"field[3,7.7;3,1;b08ground;;"..
-										realterrain.esc(realterrain.get_setting("b08ground")).."]" ..
-									"field[6,7.7;3,1;b08tree;;"..
-										realterrain.esc(realterrain.get_setting("b08tree")).."]" ..
-									"field[9,7.7;3,1;b08shrub;;"..
-										realterrain.esc(realterrain.get_setting("b08shrub")).."]" ..
-										
-									"label[0.2,8.6;09]"..
-									"field[2,8.7;1,1;b09cut;;"..
-										realterrain.esc(realterrain.get_setting("b09cut")).."]" ..
-									"field[3,8.7;3,1;b09ground;;"..
-										realterrain.esc(realterrain.get_setting("b09ground")).."]" ..
-									"field[6,8.7;3,1;b09tree;;"..
-										realterrain.esc(realterrain.get_setting("b09tree")).."]" ..
-									"field[9,8.7;3,1;b09shrub;;"..
-										realterrain.esc(realterrain.get_setting("b09shrub")).."]" ..
-										
-									"label[0.2,9.6;10]"..
-									"field[2,9.7;1,1;b10cut;;"..
-										realterrain.esc(realterrain.get_setting("b10cut")).."]" ..
-									"field[3,9.7;3,1;b10ground;;"..
-										realterrain.esc(realterrain.get_setting("b10ground")).."]" ..
-									"field[6,9.7;3,1;b10tree;;"..
-										realterrain.esc(realterrain.get_setting("b10tree")).."]" ..
-									"field[9,9.7;3,1;b10shrub;;"..
-										realterrain.esc(realterrain.get_setting("b10shrub")).."]"
-									
+                                    f_header .. f1 .. f2 .. f3 .. f4..f5..f6..f7..f8..f9..f10
 	)
 	return true
 end

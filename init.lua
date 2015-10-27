@@ -42,7 +42,7 @@ realterrain.settings.b02sprob = 5
 
 realterrain.settings.b03cut = 3
 realterrain.settings.b03ground = "default:sand"
-realterrain.settings.b03tree = "s"
+realterrain.settings.b03tree = ""
 realterrain.settings.b03tprob = 0.3
 realterrain.settings.b03shrub = "default:dry_grass_1"
 realterrain.settings.b03sprob = 5

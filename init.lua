@@ -1,6 +1,8 @@
 MODPATH = minetest.get_modpath("realterrain")
 WORLDPATH = minetest.get_worldpath()
 RASTERS = MODPATH .. "/rasters/"
+--move ImageMagick's identify to an easily accessable location
+IDENTIFY = "I:/Minetest/identify"
 local realterrain = {}
 realterrain.settings = {}
 
@@ -10,10 +12,10 @@ ie.require "luarocks.loader"
 local magick = ie.require "magick"
 
 --defaults
-realterrain.settings.dembits = 8 --@todo remove this setting when magick autodetects bitdepth
-realterrain.settings.waterbits = 8 --@todo remove this setting when magick autodetects bitdepth
-realterrain.settings.roadbits = 8 --@todo remove this setting when magick autodetects bitdepth
-realterrain.settings.biomebits = 8 --@todo remove this setting when magick autodetects bitdepth
+realterrain.settings.dembits = 0 
+realterrain.settings.waterbits = 0 
+realterrain.settings.roadbits = 0 
+realterrain.settings.biomebits = 0 
 realterrain.settings.yscale = 1
 realterrain.settings.xscale = 1
 realterrain.settings.zscale = 1
@@ -192,6 +194,36 @@ local biomeimage, waterimage, roadimage
 biomeimage = magick.load_image(RASTERS..realterrain.settings.filebiome)
 waterimage = magick.load_image(RASTERS..realterrain.settings.filewater)
 roadimage  = magick.load_image(RASTERS..realterrain.settings.fileroads)
+
+--Get the bit depth of the files
+if package.config:sub(1,1) == "/" then
+--Unix
+	local list = {}
+	local p = io.popen('find "'..RASTERS..'" -type f')
+	--do unix stuff                         
+else
+--Windows
+	local i, list, popen = 0, {}, io.popen 
+	for f in popen(IDENTIFY..' -format \"%[bit-depth]\" "'..RASTERS..realterrain.settings.filedem..'" -quiet'):lines() do
+		realterrain.settings.dembits = tonumber(f)
+		print ("dem bits: "..realterrain.settings.dembits)
+	end
+	local i, list, popen = 0, {}, io.popen
+	for f in popen(IDENTIFY..' -format \"%[bit-depth]\" "'..RASTERS..realterrain.settings.filebiome..'" -quiet'):lines() do
+		realterrain.settings.biomebits =  tonumber(f)
+		print ("biome bits: "..realterrain.settings.biomebits)
+	end
+	local i, list, popen = 0, {}, io.popen
+	for f in popen(IDENTIFY..' -format \"%[bit-depth]\" "'..RASTERS..realterrain.settings.filewater..'" -quiet'):lines() do
+		realterrain.settings.waterbits = tonumber(f)
+		print ("water bits: "..realterrain.settings.waterbits)
+	end
+	local i, list, popen = 0, {}, io.popen
+	for f in popen(IDENTIFY..' -format \"%[bit-depth]\" "'..RASTERS..realterrain.settings.fileroads..'" -quiet'):lines() do
+		realterrain.settings.roadbits = tonumber(f)
+		print ("road bits: "..realterrain.settings.roadbits)
+	end
+end
 --@todo throw warning if image sizes do not match the dem size
 
 -- Set mapgen parameters
@@ -427,6 +459,7 @@ end)
 function realterrain.get_pixel(x,z)
 	local e, b, w, r = 0,0,0,0
     local row,col = 0 - z + tonumber(realterrain.settings.zoffset), 0 + x - tonumber(realterrain.settings.xoffset)
+	
 	--adjust for x and z scales
     row = math.floor(row / tonumber(realterrain.settings.zscale))
     col = math.floor(col / tonumber(realterrain.settings.xscale))

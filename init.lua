@@ -25,6 +25,7 @@ realterrain.settings.fileroads = 'roads.tif'
 realterrain.settings.filebiome = 'biomes.tif'
 realterrain.settings.generate_subsurface = 0
 realterrain.settings.default_landcover = "wool:yellow"
+realterrain.settings.realwater = 1
 
 realterrain.settings.b01cut = 1
 realterrain.settings.b01ground = "default:dirt_with_grass"
@@ -214,7 +215,10 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_gravel = minetest.get_content_id("default:gravel")
 	local c_stone  = minetest.get_content_id("default:stone")
 	local c_sand   = minetest.get_content_id("default:sand")
-	local c_water  = minetest.get_content_id("default:water_source")
+	local c_water  = minetest.get_content_id("wool:blue")
+	if (realterrain.settings.realwater == 1) then
+		c_water  = minetest.get_content_id("default:water_source")
+	end
 	local c_dirt   = minetest.get_content_id("default:dirt")
 	local c_coal   = minetest.get_content_id("default:stone_with_coal")
 	local c_cobble = minetest.get_content_id("default:cobble")
@@ -325,31 +329,34 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local vi = area:index(x, y0, z) -- voxelmanip index
 		for y = y0, y1 do
             --underground layers
-			if y < elev and realterrain.settings.generate_subsurface == 1 then 
+			if y < elev then
+				if realterrain.settings.generate_subsurface == 1 then 
 				--create strata of stone, cobble, gravel, sand, coal, iron ore, etc
-				if y < elev - (30 + math.random(1,5)) then
-					data[vi] = c_stone
-				elseif y < elev - (25 + math.random(1,5)) then
-					data[vi] = c_gravel
-				elseif y < elev - (20 + math.random(1,5)) then
-					data[vi] = c_sand
-				elseif y < elev - (15 + math.random(1,5)) then
-					data[vi] = c_coal
-				elseif y < elev - (10 + math.random(1,5)) then
-					data[vi] = c_stone
-				elseif y < elev - (5 + math.random(1,5)) then
-					data[vi] = c_sand
-				else
-					data[vi] = ground
+					if y < elev - (30 + math.random(1,5)) then
+						data[vi] = c_stone
+					elseif y < elev - (25 + math.random(1,5)) then
+						data[vi] = c_gravel
+					elseif y < elev - (20 + math.random(1,5)) then
+						data[vi] = c_sand
+					elseif y < elev - (15 + math.random(1,5)) then
+						data[vi] = c_coal
+					elseif y < elev - (10 + math.random(1,5)) then
+						data[vi] = c_stone
+					elseif y < elev - (5 + math.random(1,5)) then
+						data[vi] = c_sand
+					else
+						data[vi] = ground
+					end
+				end
+				-- water lower by one
+				if y == elev - 1 and water > 0 then
+					data[vi] = c_water
 				end
 			--the surface layer, determined by the different cover files
 			elseif y == elev then
 				--roads
 				if road > 0 then
 					data[vi] = c_cobble
-				 --rivers and lakes
-				elseif water > 0 then
-					data[vi] = c_water
 				--biome cover
 				else
 					--sand for lake bottoms
@@ -360,7 +367,9 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						data[vi] = c_gravel
 					--default
 					else
-						data[vi] = ground
+						if water < 1 then
+							data[vi] = ground
+						end
 					end
 				end
 			--shrubs and trees one block above the ground
@@ -391,8 +400,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	
 	local chugent = math.ceil((os.clock() - t0) * 1000)
 	--print ("[DEM] "..chugent.." ms  mapchunk ("..cx0..", "..math.floor((y0 + 32) / 80)..", "..cz0..")")
-
---[[ report/output for map gen values
+--[[
 	for a,b in pairs(biomecount) do
 		if b > 0 then
 			print ("Biome "..a.." Count: "..b)

@@ -150,7 +150,6 @@ function realterrain.esc(str)
 end
 
 function realterrain.list_images()
-	local dir = MODPATH .. "/dem/"
 	local rtypes = {".png", ".tif"}
 	
 	if package.config:sub(1,1) == "/" then
@@ -172,7 +171,7 @@ function realterrain.list_images()
 	--Windows
 		local i, list, popen = 0, {}, io.popen 
 		--Open directory look for files, loop through all files 
-		for filename in popen('dir "'..dir..'" /b'):lines() do
+		for filename in popen('dir "'..RASTERS..'" /b'):lines() do
 			for j, extension in ipairs(rtypes) do
 				if string.find(filename, extension, -4) ~= nil then
 					i = i + 1

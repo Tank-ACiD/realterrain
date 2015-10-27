@@ -10,7 +10,10 @@ ie.require "luarocks.loader"
 local magick = ie.require "magick"
 
 --defaults
-realterrain.settings.bits = 8 --@todo remove this setting when magick autodetects bitdepth
+realterrain.settings.dembits = 8 --@todo remove this setting when magick autodetects bitdepth
+realterrain.settings.waterbits = 8 --@todo remove this setting when magick autodetects bitdepth
+realterrain.settings.roadbits = 8 --@todo remove this setting when magick autodetects bitdepth
+realterrain.settings.biomebits = 8 --@todo remove this setting when magick autodetects bitdepth
 realterrain.settings.yscale = 1
 realterrain.settings.xscale = 1
 realterrain.settings.zscale = 1
@@ -434,21 +437,21 @@ function realterrain.get_pixel(x,z)
     
     e = dem:get_pixel(col, row)
     --adjust for bit depth and vscale
-    e = math.floor(e * (2^tonumber(realterrain.settings.bits))) --@todo change when magick autodetects bit depth
+    e = math.floor(e * (2^tonumber(realterrain.settings.dembits))) --@todo change when magick autodetects bit depth
     e = math.floor((e / tonumber(realterrain.settings.yscale)) + tonumber(realterrain.settings.yoffset))
     --print("raw e: "..e)
 
 	if biomeimage then 
 		b = biomeimage:get_pixel(col, row) 
-		b = math.floor(b * (2^tonumber(realterrain.settings.bits))) --@todo change when magick autodetects bit depth
+		b = math.floor(b * (2^tonumber(realterrain.settings.biomebits))) --@todo change when magick autodetects bit depth
 	end
 	if waterimage then 
 		w = waterimage:get_pixel(col, row)
-		w = math.floor(w * (2^tonumber(realterrain.settings.bits))) --@todo change when magick autodetects bit depth
+		w = math.floor(w * (2^tonumber(realterrain.settings.waterbits))) --@todo change when magick autodetects bit depth
 	end
 	if roadimage then 
 		r = roadimage:get_pixel(col, row)
-	    r = math.floor(r * (2^tonumber(realterrain.settings.bits))) --@todo change when magick autodetects bit depth
+	    r = math.floor(r * (2^tonumber(realterrain.settings.roadbits))) --@todo change when magick autodetects bit depth
 	end
 	    
 	--print("elev: "..e..", biome: "..b..", water: "..w..", road: "..r)
